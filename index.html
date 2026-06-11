@@ -10,6 +10,8 @@
     <meta property="og:description" content="Más de 10 años de experiencia en equipamiento médico, instrumental quirúrgico, mantención y soluciones para instituciones de salud.">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="es_CL">
+    <link rel="icon" type="image/png" href="assets/logo2.png">
+    <link rel="apple-touch-icon" href="assets/logo2.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,12 +25,13 @@
         </a>
         <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Abrir menu">Menu</button>
         <nav id="main-nav" class="nav" aria-label="Principal">
-          <a href="#empresa">Empresa</a>
+          <a href="#contexto">Contexto</a>
+          <a href="#metodo">Manual</a>
           <a href="#servicios">Servicios</a>
           <a href="#catalogo">Catalogo</a>
           <a href="#cobertura">Cobertura</a>
           <a href="#contacto">Contacto</a>
-          <button class="btn btn-primary btn-sm quote-trigger" type="button">Cotizar</button>
+          <button class="btn btn-primary btn-sm quote-trigger" type="button">Solicitar cotizacion</button>
           <button id="auth-button" class="btn btn-secondary btn-sm" type="button">Login</button>
           <button id="logout-button" class="btn btn-secondary btn-sm hidden" type="button">Salir</button>
         </nav>
@@ -39,77 +42,134 @@
       <section id="inicio" class="hero">
         <div class="container hero-grid">
           <div class="hero-copy">
-            <span class="eyebrow">Ingenieria clinica y equipamiento medico</span>
-            <h1>Somos tu impulso cuando la continuidad clinica importa.</h1>
-            <p class="lead">SUPMED brinda soluciones integrales para instituciones de salud: instrumental quirurgico ELCON, accesorios medicos monitorizados, mantencion preventiva y correctiva, gestion de equipamiento y asesoria tecnica-profesional.</p>
+            <span class="hero-kicker">Plataforma de soporte para operacion clinica</span>
+            <h1>Equipamiento, instrumental y continuidad tecnica con criterio SUPMED.</h1>
+            <p class="lead">Unimos ingenieria clinica, abastecimiento, mantencion y asesoria profesional para que instituciones de salud puedan operar con trazabilidad, respaldo y respuesta oportuna.</p>
             <div class="hero-actions">
-              <a href="#servicios" class="btn btn-primary">Ver servicios</a>
-              <button type="button" class="btn btn-secondary quote-trigger">Solicitar asesoria</button>
+              <button type="button" class="btn btn-primary quote-trigger">Solicitar cotizacion</button>
+              <a href="#metodo" class="btn btn-secondary">Ver manual SUPMED</a>
             </div>
+            <div class="hero-proof">
+              <div><strong>Ingenieria clinica</strong><span>Seleccion, gestion y continuidad operacional.</span></div>
+              <div><strong>Servicio tecnico</strong><span>Mantencion preventiva, correctiva y soporte.</span></div>
+              <div><strong>Catalogo trazable</strong><span>Lineas cotizables segun necesidad tecnica.</span></div>
+            </div>
+            <p class="hero-note">Herramienta de apoyo comercial y tecnico. Cada requerimiento se evalua segun contexto, disponibilidad y alcance.</p>
           </div>
-          <aside class="hero-panel" aria-label="Resumen SUPMED">
-            <img src="assets/logo2.png" alt="" class="hero-mark" aria-hidden="true">
-            <div class="metric-row">
-              <strong>10+</strong>
-              <span>anos de experiencia en manejo, mantencion, reparacion y adquisicion de equipamiento medico.</span>
+          <aside class="hero-panel reveal-card" aria-label="Resumen SUPMED">
+            <div class="panel-label">Porque la continuidad clinica no puede esperar.</div>
+            <div class="clinical-shot">
+              <img src="assets/logo2.png" alt="" aria-hidden="true">
+              <div class="screen-card screen-main">
+                <span>SUPMED Care Hub</span>
+                <strong>Evaluacion tecnica</strong>
+                <small>Equipos, insumos, mantencion y prioridad.</small>
+              </div>
+              <div class="screen-card screen-alt">
+                <strong>10+ anos</strong>
+                <small>Experiencia aplicada en salud.</small>
+              </div>
             </div>
-            <div class="hero-tags">
-              <span>ELCON Medical</span>
-              <span>UpnMed</span>
-              <span>Servicio tecnico</span>
-              <span>Cobertura regional</span>
+            <div class="panel-caption">
+              <strong>Vista ejecutiva para equipos de salud</strong>
+              <span>Riesgo operativo, historial, acciones posteriores y soporte en un flujo claro.</span>
             </div>
           </aside>
         </div>
       </section>
 
-      <section id="empresa" class="intro-section">
-        <div class="container split">
-          <div>
-            <span class="eyebrow">Sobre SUPMED</span>
-            <h2>Soluciones ajustadas a las necesidades reales de la operacion clinica.</h2>
-          </div>
-          <div class="copy-stack">
-            <p>Trabajamos junto a un equipo multidisciplinario que se adapta a los requerimientos de centros medicos, clinicas, hospitales, consultas, CESFAM, CECOF y profesionales independientes.</p>
-            <p>Sabemos lo delicado que es mantener un servicio eficiente en salud. Por eso combinamos soporte cercano, seleccion tecnica de productos y planificacion de mantencion con altos estandares de calidad.</p>
-          </div>
-        </div>
-      </section>
+      <div class="section-rule" aria-hidden="true"></div>
 
-      <section class="proof-band" aria-label="Diferenciales">
-        <div class="container proof-grid">
-          <div>
-            <strong>Respuesta cercana</strong>
-            <span>Asesoria y acompanamiento ante requerimientos y eventualidades.</span>
-          </div>
-          <div>
-            <strong>Normativa sanitaria</strong>
-            <span>Conocimiento en exigencias sanitarias, constructivas y energeticas.</span>
-          </div>
-          <div>
-            <strong>Calidad nacional</strong>
-            <span>Servicio tecnico en regiones con el mismo estandar de atencion.</span>
-          </div>
-        </div>
-      </section>
-
-      <section id="servicios">
+      <section id="contexto" class="context-section">
         <div class="container">
-          <div class="section-head">
-            <span class="eyebrow">Servicios</span>
-            <h2>Un soporte completo para equipar, mantener y mejorar tu operacion.</h2>
-            <p class="lead">Desde la seleccion del equipamiento hasta la mantencion y la resolucion de problematicas operativas del area de la salud.</p>
+          <div class="section-head wide">
+            <span class="eyebrow">Contexto operativo</span>
+            <h2>La continuidad clinica necesita orden, oportunidad y respaldo tecnico.</h2>
+            <p class="lead">El desafio no es solo comprar o reparar: es convertir informacion dispersa en una ruta clara para priorizar, mantener, abastecer y documentar cada decision.</p>
+          </div>
+          <div class="context-grid">
+            <article class="image-card">
+              <div class="card-visual visual-1"></div>
+              <h3>Compras sin criterio tecnico</h3>
+              <p>La seleccion de equipamiento requiere compatibilidad, uso real y continuidad de servicio.</p>
+            </article>
+            <article class="image-card">
+              <div class="card-visual visual-2"></div>
+              <h3>Mantencion reactiva</h3>
+              <p>Un equipo detenido puede afectar agenda, seguridad y disponibilidad clinica.</p>
+            </article>
+            <article class="image-card">
+              <div class="card-visual visual-3"></div>
+              <h3>Catalogo disperso</h3>
+              <p>Instrumental, accesorios e insumos necesitan trazabilidad para cotizar con precision.</p>
+            </article>
+            <article class="image-card">
+              <div class="card-visual visual-4"></div>
+              <h3>Cobertura compleja</h3>
+              <p>La atencion en regiones exige coordinacion, respuesta y estandar nacional.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-rule" aria-hidden="true"></div>
+
+      <section id="metodo" class="method-section">
+        <div class="container method-grid">
+          <div>
+            <span class="eyebrow">Manual SUPMED</span>
+            <h2>Una capa metodologica para ordenar requerimientos, riesgo y seguimiento.</h2>
+            <p class="lead">El manual SUPMED organiza cada solicitud con una lectura tecnica: que se necesita, donde se usara, que impacto tiene y que respuesta conviene priorizar.</p>
+            <div class="manual-grid">
+              <article><span>Priorizacion</span><strong>Riesgo</strong><p>Clasificacion por urgencia operativa, criticidad y continuidad.</p></article>
+              <article><span>Registro</span><strong>Claro</strong><p>Datos comparables para cotizacion, mantencion o soporte.</p></article>
+              <article><span>Gestion</span><strong>Panel</strong><p>Seguimiento de productos, servicios, regiones y acciones.</p></article>
+              <article><span>Respuesta</span><strong>Tecnica</strong><p>Recomendaciones acordes a alcance, disponibilidad y uso.</p></article>
+            </div>
+          </div>
+          <aside class="manual-panel">
+            <div class="panel-label">Disenado para operacion clinica real.</div>
+            <img src="assets/logosupmed5.png" alt="SUPMED manual operativo">
+            <div class="panel-caption">
+              <strong>Manual como apoyo, no como improvisacion</strong>
+              <span>Un flujo simple para pasar de la necesidad al plan de accion.</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <div class="section-rule" aria-hidden="true"></div>
+
+      <section id="servicios" class="flow-section">
+        <div class="container">
+          <div class="section-head wide">
+            <span class="eyebrow">Implementacion</span>
+            <h2>Del requerimiento inicial a una decision mejor documentada.</h2>
+            <p class="lead">Un flujo simple para equipos de salud, con suficiente estructura para auditoria, continuidad y mejora.</p>
+          </div>
+          <div class="process-line">
+            <article><span>1</span><strong>Ingreso</strong><p>Se registran necesidad, ubicacion, equipo o categoria.</p><small>Captura segura</small></article>
+            <article><span>2</span><strong>Analisis</strong><p>Se evalua criticidad, compatibilidad y alcance tecnico.</p><small>Criterio clinico</small></article>
+            <article><span>3</span><strong>Cotizacion</strong><p>Se ordenan alternativas, referencias y condiciones.</p><small>Respuesta clara</small></article>
+            <article><span>4</span><strong>Ejecucion</strong><p>Se coordina compra, mantencion o soporte presencial.</p><small>Continuidad</small></article>
+            <article><span>5</span><strong>Seguimiento</strong><p>Se documentan acciones posteriores y nuevas necesidades.</p><small>Trazabilidad</small></article>
+          </div>
+          <div class="section-head compact-head">
+            <span class="eyebrow">Capacidades</span>
+            <h2>Servicios SUPMED</h2>
           </div>
           <div id="services-grid" class="service-grid"></div>
         </div>
       </section>
 
-      <section id="catalogo" class="alt">
+      <div class="section-rule" aria-hidden="true"></div>
+
+      <section id="catalogo" class="alt catalog-section">
         <div class="container">
-          <div class="section-head">
+          <div class="section-head wide">
             <span class="eyebrow">Catalogo referencial</span>
-            <h2>Lineas de productos y soluciones</h2>
-            <p class="lead">Filtra por categoria o busca por nombre. Cada requerimiento se cotiza segun necesidad tecnica, disponibilidad y alcance del proyecto.</p>
+            <h2>Lineas cotizables para operacion institucional, soporte tecnico e investigacion.</h2>
+            <p class="lead">Busca por categoria, nombre o codigo. Cada item se ajusta a disponibilidad, requerimientos tecnicos y alcance del proyecto.</p>
           </div>
           <div id="admin-catalog-tools" class="admin-catalog-tools hidden">
             <div>
@@ -126,57 +186,61 @@
         </div>
       </section>
 
-      <section id="sectores">
-        <div class="container split">
-          <div>
-            <span class="eyebrow">Sectores atendidos</span>
-            <h2>Experiencia con distintos niveles de atencion y especialidad.</h2>
-            <p class="lead">SUPMED acompana a instituciones y equipos clinicos que necesitan continuidad, equipamiento confiable y soporte tecnico.</p>
+      <section id="sectores" class="users-section">
+        <div class="container">
+          <div class="section-head wide">
+            <span class="eyebrow">Usuarios</span>
+            <h2>Disenado para equipos que necesitan ordenar compras, mantencion y soporte clinico.</h2>
+            <p class="lead">SUPMED se adapta a contextos asistenciales, programas, instituciones y profesionales que requieren respuesta tecnica y continuidad.</p>
           </div>
           <div id="sector-list" class="sector-list"></div>
         </div>
       </section>
 
-      <section id="cobertura" class="coverage">
-        <div class="container coverage-grid">
-          <div>
-            <span class="eyebrow">Cobertura</span>
-            <h2>Presencia en regiones y zonas extremas del pais.</h2>
-            <p>Contamos con servicio presencial y red de contacto en Calama, Antofagasta, Bio Bio, Metropolitana, Araucania y Magallanes, entregando soporte con calidad nacional.</p>
-            <button type="button" class="btn btn-secondary quote-trigger">Coordinar requerimiento</button>
+      <section id="cobertura" class="impact-section">
+        <div class="container">
+          <div class="section-head wide">
+            <span class="eyebrow">Impacto operativo</span>
+            <h2>Mas claridad para priorizar, abastecer, reparar y monitorear requerimientos.</h2>
+            <p class="lead">Indicadores de trabajo que ayudan a visualizar cobertura, respuesta, trazabilidad y continuidad.</p>
+          </div>
+          <div class="metric-grid">
+            <article><span>Cobertura</span><strong>7</strong><small>zonas</small><p>Red de contacto y soporte presencial segun region.</p><em>Meta: cobertura nacional</em></article>
+            <article><span>Respuesta</span><strong>10+</strong><small>anos</small><p>Experiencia en manejo, mantencion y adquisicion de equipos.</p><em>Trayectoria comprobable</em></article>
+            <article><span>Catalogo</span><strong>6</strong><small>lineas</small><p>Instrumental, insumos, mantencion, equipamiento y alquiler.</p><em>Busqueda por categoria</em></article>
+            <article><span>Trazabilidad</span><strong>1</strong><small>flujo</small><p>Solicitud, evaluacion, cotizacion y seguimiento posterior.</p><em>Manual SUPMED</em></article>
           </div>
           <div id="region-list" class="region-list"></div>
         </div>
       </section>
 
-      <section id="elcon" class="brand-section">
-        <div class="container brand-grid">
+      <div class="section-rule" aria-hidden="true"></div>
+
+      <section id="elcon" class="trust-section">
+        <div class="container trust-grid">
           <div>
-            <span class="eyebrow">Marca representada</span>
-            <h2>Instrumental quirurgico ELCON Medical.</h2>
-            <p>SUPMED trabaja con instrumental quirurgico ELCON Medical y soluciones asociadas para pabellon, apoyando la seleccion de productos segun especialidad, procedimiento y necesidad institucional.</p>
+            <span class="eyebrow">Confianza</span>
+            <h2>Transparencia tecnica para un uso clinico responsable.</h2>
+            <p class="lead">SUPMED declara alcance, limites y proposito: apoyar decisiones de compra, mantencion y soporte, sin reemplazar los criterios internos de cada institucion.</p>
           </div>
-          <img src="assets/logosupmed4.png" alt="SUPMED" class="wide-logo">
+          <div class="trust-cards">
+            <article><span>Metodologia</span><strong>Variables tecnicas estructuradas</strong><p>El modelo considera uso, ubicacion, criticidad, equipamiento y objetivo operacional.</p></article>
+            <article><span>Validacion</span><strong>Orientado a requerimientos reales</strong><p>La respuesta se ajusta por etapas, contexto, presupuesto y disponibilidad.</p></article>
+            <article><span>Limites</span><strong>No reemplaza protocolos internos</strong><p>El resultado sirve como apoyo comercial y tecnico para cada equipo.</p></article>
+            <article><span>Marca</span><strong>Instrumental ELCON Medical</strong><p>Seleccion de instrumental quirurgico segun especialidad, procedimiento y necesidad institucional.</p></article>
+          </div>
         </div>
       </section>
 
-      <section id="contacto" class="alt contact-section">
-        <div class="container contact-grid">
+      <section id="contacto" class="contact-section">
+        <div class="container final-cta">
           <div>
-            <span class="eyebrow">Contacto</span>
-            <h2>Mejora el ritmo de tus operaciones.</h2>
-            <p class="lead">Cuéntanos que necesitas y prepararemos una respuesta comercial y tecnica para tu institucion, proyecto o servicio.</p>
-          </div>
-          <div class="contact-card">
-            <h3>Solicitar cotizacion o asesoria</h3>
-            <p>El formulario abre tu correo con el detalle del requerimiento para enviarlo a SUPMED.</p>
-            <dl>
-              <dt>Correo</dt>
-              <dd><a href="mailto:contacto@supmed.cl">contacto@supmed.cl</a></dd>
-              <dt>Atencion</dt>
-              <dd>Instituciones de salud y profesionales clinicos</dd>
-            </dl>
-            <button type="button" class="btn btn-primary quote-trigger">Iniciar solicitud</button>
+            <h2>Conversemos sobre una implementacion seria de SUPMED.</h2>
+            <p>Agenda una revision para evaluar equipamiento, mantencion, instrumental o una propuesta ajustada a tu operacion clinica.</p>
+            <div class="hero-actions center">
+              <button type="button" class="btn btn-secondary quote-trigger">Solicitar cotizacion</button>
+              <a href="mailto:contacto@supmed.cl" class="btn btn-ghost">contacto@supmed.cl</a>
+            </div>
           </div>
         </div>
       </section>
@@ -190,7 +254,8 @@
         </div>
         <div>
           <h4>Navegacion</h4>
-          <a href="#empresa">Empresa</a>
+          <a href="#contexto">Contexto</a>
+          <a href="#metodo">Manual</a>
           <a href="#servicios">Servicios</a>
           <a href="#catalogo">Catalogo</a>
           <a href="#contacto">Contacto</a>
@@ -205,6 +270,8 @@
       </div>
       <div class="container footer-bottom">SUPMED - Somos tu impulso cuando mas lo necesitas.</div>
     </footer>
+
+    <button class="floating-quote quote-trigger" type="button" aria-label="Solicitar cotizacion">+</button>
 
     <div id="quote-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Solicitar cotizacion">
       <div class="modal">
