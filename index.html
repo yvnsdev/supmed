@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SUPMED | Ingeniería clínica, instrumental quirúrgico y equipamiento médico</title>
+    <meta name="description" content="SUPMED entrega soluciones integrales de ingeniería clínica, instrumental quirúrgico ELCON, accesorios médicos, mantención y asesoría para instituciones de salud en Chile.">
+    <meta name="keywords" content="SUPMED, ingeniería clínica Chile, instrumental quirúrgico ELCON, mantención equipamiento médico, insumos médicos, equipamiento clínico">
+    <meta property="og:title" content="SUPMED | Tu impulso en salud e ingeniería clínica">
+    <meta property="og:description" content="Más de 10 años de experiencia en equipamiento médico, instrumental quirúrgico, mantención y soluciones para instituciones de salud.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_CL">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-row">
+        <a href="#inicio" class="brand" aria-label="SUPMED inicio">
+          <img src="assets/logosupmed2.png" alt="SUPMED" class="brand-logo">
+        </a>
+        <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Abrir menu">Menu</button>
+        <nav id="main-nav" class="nav" aria-label="Principal">
+          <a href="#empresa">Empresa</a>
+          <a href="#servicios">Servicios</a>
+          <a href="#catalogo">Catalogo</a>
+          <a href="#cobertura">Cobertura</a>
+          <a href="#contacto">Contacto</a>
+          <button class="btn btn-primary btn-sm quote-trigger" type="button">Cotizar</button>
+          <button id="auth-button" class="btn btn-secondary btn-sm" type="button">Login</button>
+          <button id="logout-button" class="btn btn-secondary btn-sm hidden" type="button">Salir</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section id="inicio" class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Ingenieria clinica y equipamiento medico</span>
+            <h1>Somos tu impulso cuando la continuidad clinica importa.</h1>
+            <p class="lead">SUPMED brinda soluciones integrales para instituciones de salud: instrumental quirurgico ELCON, accesorios medicos monitorizados, mantencion preventiva y correctiva, gestion de equipamiento y asesoria tecnica-profesional.</p>
+            <div class="hero-actions">
+              <a href="#servicios" class="btn btn-primary">Ver servicios</a>
+              <button type="button" class="btn btn-secondary quote-trigger">Solicitar asesoria</button>
+            </div>
+          </div>
+          <aside class="hero-panel" aria-label="Resumen SUPMED">
+            <img src="assets/logo2.png" alt="" class="hero-mark" aria-hidden="true">
+            <div class="metric-row">
+              <strong>10+</strong>
+              <span>anos de experiencia en manejo, mantencion, reparacion y adquisicion de equipamiento medico.</span>
+            </div>
+            <div class="hero-tags">
+              <span>ELCON Medical</span>
+              <span>UpnMed</span>
+              <span>Servicio tecnico</span>
+              <span>Cobertura regional</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="empresa" class="intro-section">
+        <div class="container split">
+          <div>
+            <span class="eyebrow">Sobre SUPMED</span>
+            <h2>Soluciones ajustadas a las necesidades reales de la operacion clinica.</h2>
+          </div>
+          <div class="copy-stack">
+            <p>Trabajamos junto a un equipo multidisciplinario que se adapta a los requerimientos de centros medicos, clinicas, hospitales, consultas, CESFAM, CECOF y profesionales independientes.</p>
+            <p>Sabemos lo delicado que es mantener un servicio eficiente en salud. Por eso combinamos soporte cercano, seleccion tecnica de productos y planificacion de mantencion con altos estandares de calidad.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="proof-band" aria-label="Diferenciales">
+        <div class="container proof-grid">
+          <div>
+            <strong>Respuesta cercana</strong>
+            <span>Asesoria y acompanamiento ante requerimientos y eventualidades.</span>
+          </div>
+          <div>
+            <strong>Normativa sanitaria</strong>
+            <span>Conocimiento en exigencias sanitarias, constructivas y energeticas.</span>
+          </div>
+          <div>
+            <strong>Calidad nacional</strong>
+            <span>Servicio tecnico en regiones con el mismo estandar de atencion.</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="servicios">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow">Servicios</span>
+            <h2>Un soporte completo para equipar, mantener y mejorar tu operacion.</h2>
+            <p class="lead">Desde la seleccion del equipamiento hasta la mantencion y la resolucion de problematicas operativas del area de la salud.</p>
+          </div>
+          <div id="services-grid" class="service-grid"></div>
+        </div>
+      </section>
+
+      <section id="catalogo" class="alt">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow">Catalogo referencial</span>
+            <h2>Lineas de productos y soluciones</h2>
+            <p class="lead">Filtra por categoria o busca por nombre. Cada requerimiento se cotiza segun necesidad tecnica, disponibilidad y alcance del proyecto.</p>
+          </div>
+          <div id="admin-catalog-tools" class="admin-catalog-tools hidden">
+            <div>
+              <strong>Modo administrador</strong>
+              <span id="admin-user-label">Sesion iniciada</span>
+            </div>
+            <button id="add-product-button" class="btn btn-primary btn-sm" type="button">Agregar producto</button>
+          </div>
+          <div class="catalog-toolbar">
+            <input id="filter-search" type="search" placeholder="Buscar producto, codigo o servicio...">
+            <select id="filter-cat" aria-label="Filtrar por categoria"></select>
+          </div>
+          <div id="prod-grid" class="grid-products"></div>
+        </div>
+      </section>
+
+      <section id="sectores">
+        <div class="container split">
+          <div>
+            <span class="eyebrow">Sectores atendidos</span>
+            <h2>Experiencia con distintos niveles de atencion y especialidad.</h2>
+            <p class="lead">SUPMED acompana a instituciones y equipos clinicos que necesitan continuidad, equipamiento confiable y soporte tecnico.</p>
+          </div>
+          <div id="sector-list" class="sector-list"></div>
+        </div>
+      </section>
+
+      <section id="cobertura" class="coverage">
+        <div class="container coverage-grid">
+          <div>
+            <span class="eyebrow">Cobertura</span>
+            <h2>Presencia en regiones y zonas extremas del pais.</h2>
+            <p>Contamos con servicio presencial y red de contacto en Calama, Antofagasta, Bio Bio, Metropolitana, Araucania y Magallanes, entregando soporte con calidad nacional.</p>
+            <button type="button" class="btn btn-secondary quote-trigger">Coordinar requerimiento</button>
+          </div>
+          <div id="region-list" class="region-list"></div>
+        </div>
+      </section>
+
+      <section id="elcon" class="brand-section">
+        <div class="container brand-grid">
+          <div>
+            <span class="eyebrow">Marca representada</span>
+            <h2>Instrumental quirurgico ELCON Medical.</h2>
+            <p>SUPMED trabaja con instrumental quirurgico ELCON Medical y soluciones asociadas para pabellon, apoyando la seleccion de productos segun especialidad, procedimiento y necesidad institucional.</p>
+          </div>
+          <img src="assets/logosupmed4.png" alt="SUPMED" class="wide-logo">
+        </div>
+      </section>
+
+      <section id="contacto" class="alt contact-section">
+        <div class="container contact-grid">
+          <div>
+            <span class="eyebrow">Contacto</span>
+            <h2>Mejora el ritmo de tus operaciones.</h2>
+            <p class="lead">Cuéntanos que necesitas y prepararemos una respuesta comercial y tecnica para tu institucion, proyecto o servicio.</p>
+          </div>
+          <div class="contact-card">
+            <h3>Solicitar cotizacion o asesoria</h3>
+            <p>El formulario abre tu correo con el detalle del requerimiento para enviarlo a SUPMED.</p>
+            <dl>
+              <dt>Correo</dt>
+              <dd><a href="mailto:contacto@supmed.cl">contacto@supmed.cl</a></dd>
+              <dt>Atencion</dt>
+              <dd>Instituciones de salud y profesionales clinicos</dd>
+            </dl>
+            <button type="button" class="btn btn-primary quote-trigger">Iniciar solicitud</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <img src="assets/logosupmed3.png" alt="SUPMED" class="footer-logo">
+          <p>Soluciones de ingenieria clinica, instrumental quirurgico, mantencion y equipamiento medico para el area de la salud.</p>
+        </div>
+        <div>
+          <h4>Navegacion</h4>
+          <a href="#empresa">Empresa</a>
+          <a href="#servicios">Servicios</a>
+          <a href="#catalogo">Catalogo</a>
+          <a href="#contacto">Contacto</a>
+        </div>
+        <div>
+          <h4>Lineas</h4>
+          <a href="#catalogo">Instrumental ELCON</a>
+          <a href="#servicios">Mantencion</a>
+          <a href="#servicios">Equipamiento clinico</a>
+          <a href="#servicios">Alquiler RentaMed</a>
+        </div>
+      </div>
+      <div class="container footer-bottom">SUPMED - Somos tu impulso cuando mas lo necesitas.</div>
+    </footer>
+
+    <div id="quote-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Solicitar cotizacion">
+      <div class="modal">
+        <div class="modal-head">
+          <h3>Solicitar cotizacion</h3>
+          <button class="close-x" type="button" data-close="quote-modal" aria-label="Cerrar">&times;</button>
+        </div>
+        <div class="modal-body">
+          <span id="quote-product-tag" class="hidden quote-tag"></span>
+          <form id="quote-form" class="quote-form">
+            <input type="hidden" id="quote-product-name" name="product_name">
+            <div class="row-2">
+              <div class="field"><label>Nombre *</label><input name="name" required></div>
+              <div class="field"><label>Cargo</label><input name="position"></div>
+            </div>
+            <div class="row-2">
+              <div class="field"><label>Institucion / empresa</label><input name="institution"></div>
+              <div class="field"><label>Telefono</label><input name="phone"></div>
+            </div>
+            <div class="field"><label>Correo *</label><input name="email" type="email" required></div>
+            <div class="field"><label>Producto, servicio o categoria de interes</label><input id="quote-interest" name="interest"></div>
+            <div class="field"><label>Mensaje</label><textarea name="message" placeholder="Describe el requerimiento, ubicacion, cantidad o alcance tecnico..."></textarea></div>
+            <button type="submit" class="btn btn-primary">Enviar por correo</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="product-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Detalle">
+      <div class="modal">
+        <div class="modal-head">
+          <h3 id="product-modal-title">Detalle</h3>
+          <button class="close-x" type="button" data-close="product-modal" aria-label="Cerrar">&times;</button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-foot">
+          <button id="product-modal-quote" type="button" class="btn btn-primary">Solicitar cotizacion</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="login-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Login administrador">
+      <div class="modal modal-sm">
+        <div class="modal-head">
+          <h3>Login administrador</h3>
+          <button class="close-x" type="button" data-close="login-modal" aria-label="Cerrar">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-note">Ingresa con un usuario creado en Supabase Auth para habilitar la administracion del catalogo.</p>
+          <form id="login-form" class="quote-form">
+            <div class="field"><label>Correo *</label><input name="email" type="email" autocomplete="email" required></div>
+            <div class="field"><label>Contrasena *</label><input name="password" type="password" autocomplete="current-password" required></div>
+            <button type="submit" class="btn btn-primary">Entrar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="product-editor-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Editor de producto">
+      <div class="modal">
+        <div class="modal-head">
+          <h3 id="product-editor-title">Agregar producto</h3>
+          <button class="close-x" type="button" data-close="product-editor-modal" aria-label="Cerrar">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="product-form" class="quote-form">
+            <input type="hidden" name="id">
+            <div class="row-2">
+              <div class="field"><label>Nombre *</label><input name="name" required></div>
+              <div class="field"><label>Referencia *</label><input name="reference" required></div>
+            </div>
+            <div class="row-2">
+              <div class="field"><label>Categoria *</label><select id="product-category-input" name="categoryId" required></select></div>
+              <div class="field"><label>Orden</label><input name="sortOrder" type="number" min="0" step="1" placeholder="0"></div>
+            </div>
+            <div class="field"><label>Descripcion corta *</label><input name="short" required></div>
+            <div class="field"><label>Descripcion larga</label><textarea name="long" placeholder="Detalle, alcance tecnico, condiciones o usos sugeridos..."></textarea></div>
+            <label class="check-field"><input name="featured" type="checkbox"> Mostrar como destacado</label>
+            <div class="modal-actions">
+              <button type="submit" class="btn btn-primary">Guardar producto</button>
+              <button type="button" class="btn btn-secondary" data-close="product-editor-modal">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
