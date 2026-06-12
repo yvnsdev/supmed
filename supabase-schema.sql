@@ -1,12 +1,27 @@
 create table if not exists public.products (
   id uuid primary key default gen_random_uuid(),
   category_id text not null check (
-    category_id in ('instrumental', 'equipamiento', 'mantencion', 'insumos', 'alquiler', 'habilitacion')
+    category_id in (
+      'general',
+      'micro',
+      'trauma',
+      'gineco-uro',
+      'odonto',
+      'sets',
+      'instrumental',
+      'equipamiento',
+      'mantencion',
+      'insumos',
+      'alquiler',
+      'habilitacion'
+    )
   ),
   name text not null,
   reference text not null,
   short_description text not null,
   long_description text default '',
+  image_url text,
+  image_path text,
   featured boolean not null default false,
   sort_order integer not null default 0,
   created_by uuid references auth.users(id) on delete set null,
@@ -57,6 +72,45 @@ create policy "Usuarios autenticados pueden borrar productos"
 on public.products for delete
 to authenticated
 using (true);
+
+insert into storage.buckets
+  (id, name, public, file_size_limit, allowed_mime_types)
+values
+  (
+    'product-images',
+    'product-images',
+    true,
+    5242880,
+    array['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+  )
+on conflict (id) do update set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "Imagenes de productos visibles para todos" on storage.objects;
+create policy "Imagenes de productos visibles para todos"
+on storage.objects for select
+using (bucket_id = 'product-images');
+
+drop policy if exists "Usuarios autenticados pueden subir imagenes de productos" on storage.objects;
+create policy "Usuarios autenticados pueden subir imagenes de productos"
+on storage.objects for insert
+to authenticated
+with check (bucket_id = 'product-images');
+
+drop policy if exists "Usuarios autenticados pueden editar imagenes de productos" on storage.objects;
+create policy "Usuarios autenticados pueden editar imagenes de productos"
+on storage.objects for update
+to authenticated
+using (bucket_id = 'product-images')
+with check (bucket_id = 'product-images');
+
+drop policy if exists "Usuarios autenticados pueden borrar imagenes de productos" on storage.objects;
+create policy "Usuarios autenticados pueden borrar imagenes de productos"
+on storage.objects for delete
+to authenticated
+using (bucket_id = 'product-images');
 
 insert into public.products
   (category_id, name, reference, short_description, long_description, featured, sort_order)

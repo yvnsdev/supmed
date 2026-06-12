@@ -169,6 +169,7 @@
             <select id="filter-cat" aria-label="Filtrar por categoria"></select>
           </div>
           <div id="prod-grid" class="grid-products"></div>
+          <div id="catalog-pagination" class="catalog-pagination" aria-label="Paginacion del catalogo"></div>
         </div>
       </section>
 
@@ -308,6 +309,11 @@
             <div class="row-2">
               <div class="field"><label>Categoria *</label><select id="product-category-input" name="categoryId" required></select></div>
               <div class="field"><label>Orden</label><input name="sortOrder" type="number" min="0" step="1" placeholder="0"></div>
+            </div>
+            <div class="field">
+              <label>Imagen del producto</label>
+              <input name="image" type="file" accept="image/*">
+              <small id="product-current-image" class="field-help">Puedes subir una imagen JPG, PNG o WebP.</small>
             </div>
             <div class="field"><label>Resumen del producto *</label><input name="short" required></div>
             <div class="field"><label>Detalle adicional</label><textarea name="long" placeholder="Agrega usos sugeridos, caracteristicas, condiciones o informacion relevante..."></textarea></div>

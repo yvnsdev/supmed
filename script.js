@@ -6,6 +6,7 @@ const supabaseUrl = "https://qihrjjaatymkwdtapkht.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpaHJqamFhdHlta3dkdGFwa2h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExOTY5NTQsImV4cCI6MjA5Njc3Mjk1NH0.3cCozUogaSG_RLeMBCflvMhs8v9hLwrtoopm8xDNllA";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
+const PRODUCT_IMAGE_BUCKET = "product-images";
 
 const hasSupabaseConfig = Boolean(
   supabaseUrl &&
@@ -23,7 +24,8 @@ const categories = [
 ];
 
 let products = [];
-const state = { category: "", search: "", user: null, loadingProducts: false };
+const PRODUCTS_PER_PAGE = 8;
+const state = { category: "", search: "", user: null, loadingProducts: false, page: 1 };
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 let revealObserver = null;
@@ -67,6 +69,35 @@ function openWhatsapp(message) {
   window.open(whatsappUrl(message), "_blank", "noopener");
 }
 
+function imageExtension(file) {
+  const extension = file.name.split(".").pop()?.toLowerCase();
+  return extension && /^[a-z0-9]+$/.test(extension) ? extension : "jpg";
+}
+
+async function uploadProductImage(file, reference) {
+  if (!file) return null;
+  if (!file.type.startsWith("image/")) {
+    throw new Error("Selecciona una imagen valida.");
+  }
+
+  const safeReference = reference
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "") || "producto";
+  const path = `${safeReference}-${Date.now()}.${imageExtension(file)}`;
+  const { error } = await db.storage
+    .from(PRODUCT_IMAGE_BUCKET)
+    .upload(path, file, {
+      cacheControl: "3600",
+      upsert: false
+    });
+
+  if (error) throw error;
+
+  const { data } = db.storage.from(PRODUCT_IMAGE_BUCKET).getPublicUrl(path);
+  return { imagePath: path, imageUrl: data.publicUrl };
+}
+
 function normalizeCategoryId(categoryId, productText = "") {
   if (categories.some((category) => category.id === categoryId)) return categoryId;
   if (categoryId === "instrumental") return "general";
@@ -83,13 +114,15 @@ function mapProductFromDb(row) {
     reference: row.reference,
     short: row.short_description,
     long: row.long_description || "",
+    imageUrl: row.image_url || "",
+    imagePath: row.image_path || "",
     featured: Boolean(row.featured),
     sortOrder: row.sort_order ?? 0
   };
 }
 
 function mapProductToDb(product) {
-  return {
+  const payload = {
     category_id: product.categoryId,
     name: product.name,
     reference: product.reference,
@@ -98,6 +131,9 @@ function mapProductToDb(product) {
     featured: Boolean(product.featured),
     sort_order: Number(product.sortOrder || 0)
   };
+  if ("imageUrl" in product) payload.image_url = product.imageUrl || null;
+  if ("imagePath" in product) payload.image_path = product.imagePath || null;
+  return payload;
 }
 
 function categoryOptions(selected = "") {
@@ -118,6 +154,14 @@ function isElconProduct(product) {
 }
 
 function productVisual(product) {
+  if (product.imageUrl) {
+    return `
+      <div class="product-visual has-image" aria-hidden="true">
+        <img src="${escapeHtml(product.imageUrl)}" alt="">
+      </div>
+    `;
+  }
+
   return `
     <div class="product-visual" aria-hidden="true">
       <strong>${escapeHtml(product.name)}</strong>
@@ -170,13 +214,47 @@ function renderProducts() {
   const emptyMessage = state.loadingProducts
     ? "Cargando productos..."
     : "Por ahora no hay productos publicados en el catalogo.";
+  const totalPages = Math.max(1, Math.ceil(items.length / PRODUCTS_PER_PAGE));
+  state.page = Math.min(Math.max(state.page, 1), totalPages);
+  const pageStart = (state.page - 1) * PRODUCTS_PER_PAGE;
+  const pageItems = items.slice(pageStart, pageStart + PRODUCTS_PER_PAGE);
 
-  $("#prod-grid").innerHTML = items.length
-    ? items.map(productCard).join("")
+  $("#prod-grid").innerHTML = pageItems.length
+    ? pageItems.map(productCard).join("")
     : `<p class="empty">${emptyMessage}</p>`;
 
+  renderPagination(items.length, totalPages);
   bindProductButtons(document);
   observeRevealItems($("#prod-grid").children);
+}
+
+function renderPagination(totalItems, totalPages) {
+  const pagination = $("#catalog-pagination");
+  if (!pagination) return;
+
+  if (totalItems <= PRODUCTS_PER_PAGE) {
+    pagination.innerHTML = "";
+    pagination.classList.add("hidden");
+    return;
+  }
+
+  const firstItem = (state.page - 1) * PRODUCTS_PER_PAGE + 1;
+  const lastItem = Math.min(state.page * PRODUCTS_PER_PAGE, totalItems);
+  pagination.classList.remove("hidden");
+  pagination.innerHTML = `
+    <button class="btn btn-secondary btn-sm" type="button" data-page-action="prev" ${state.page === 1 ? "disabled" : ""}>Anterior</button>
+    <span>Mostrando ${firstItem}-${lastItem} de ${totalItems}</span>
+    <strong>Pagina ${state.page} de ${totalPages}</strong>
+    <button class="btn btn-secondary btn-sm" type="button" data-page-action="next" ${state.page === totalPages ? "disabled" : ""}>Siguiente</button>
+  `;
+
+  pagination.querySelectorAll("[data-page-action]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.page += button.dataset.pageAction === "next" ? 1 : -1;
+      renderProducts();
+      $("#catalogo")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
 }
 
 function observeRevealItems(items) {
@@ -410,7 +488,11 @@ function openProductEditor(id = "") {
   fields.sortOrder.value = product?.sortOrder ?? "";
   fields.short.value = product?.short || "";
   fields.long.value = product?.long || "";
+  fields.image.value = "";
   fields.featured.checked = Boolean(product?.featured);
+  $("#product-current-image").textContent = product?.imageUrl
+    ? "Este producto ya tiene una imagen. Puedes subir otra para reemplazarla."
+    : "Puedes subir una imagen JPG, PNG o WebP.";
   $("#product-editor-title").textContent = product ? "Editar producto" : "Agregar producto";
   openModal("product-editor-modal");
 }
@@ -435,9 +517,25 @@ async function saveProduct(event) {
     featured: fields.featured.checked,
     sortOrder: fields.sortOrder.value ? Number(fields.sortOrder.value) : 0
   };
+  const currentProduct = id ? products.find((item) => item.id === id) : null;
+  const imageFile = fields.image.files?.[0] || null;
 
   if (!product.name || !product.reference || !product.short) {
     toast("Completa nombre, referencia y resumen del producto.", "error");
+    return;
+  }
+
+  try {
+    if (imageFile) {
+      const uploaded = await uploadProductImage(imageFile, product.reference);
+      product.imageUrl = uploaded.imageUrl;
+      product.imagePath = uploaded.imagePath;
+    } else if (currentProduct) {
+      product.imageUrl = currentProduct.imageUrl;
+      product.imagePath = currentProduct.imagePath;
+    }
+  } catch (error) {
+    toast(error.message || "No se pudo subir la imagen. Intenta con otro archivo.", "error");
     return;
   }
 
@@ -567,10 +665,12 @@ function init() {
 
   $("#filter-cat").addEventListener("change", (event) => {
     state.category = event.target.value;
+    state.page = 1;
     renderProducts();
   });
   $("#filter-search").addEventListener("input", (event) => {
     state.search = event.target.value;
+    state.page = 1;
     renderProducts();
   });
   $("#quote-form").addEventListener("submit", submitQuote);
