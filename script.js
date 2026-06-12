@@ -22,99 +22,7 @@ const categories = [
   { id: "sets", name: "Sets y reposicion" }
 ];
 
-const services = [
-  ["N1", "Vendedor numero 1 ELCON", "Catalogo y respuesta comercial desde el principal vendedor de ELCON Medical en Chile."],
-  ["EL", "Catalogo ELCON Medical", "Ordenamiento de familias, referencias y piezas quirurgicas ELCON para solicitudes institucionales."],
-  ["ST", "Sets por especialidad", "Armado de bandejas y combinaciones segun procedimiento, servicio clinico y volumen de uso."],
-  ["RP", "Reposicion de instrumental", "Apoyo para completar sets, reemplazar piezas faltantes y documentar compras recurrentes."],
-  ["CT", "Cotizacion tecnica", "Revision de cantidades, equivalencias, prioridades y disponibilidad antes de emitir una propuesta."],
-  ["IC", "Compra institucional", "Acompanamiento comercial para clinicas, hospitales, centros medicos y profesionales."]
-];
-
-const seedProducts = [
-  {
-    id: "elcon-cirugia-general",
-    categoryId: "general",
-    name: "Instrumental ELCON para cirugia general",
-    reference: "ELCON-CG-BASE",
-    short: "Pinzas, tijeras, portaagujas, separadores y piezas base para pabellon.",
-    long: "Linea cotizable con SUPMED, vendedor numero 1 de ELCON Medical en Chile, para armar, completar o renovar bandejas de cirugia general segun especialidad, cantidad requerida y disponibilidad.",
-    featured: true,
-    sortOrder: 10
-  },
-  {
-    id: "elcon-set-pabellon",
-    categoryId: "sets",
-    name: "Set quirurgico ELCON por especialidad",
-    reference: "ELCON-SET-ESP",
-    short: "Configuracion de sets para compras completas, ampliaciones o reposicion.",
-    long: "Levantamiento de piezas por procedimiento o servicio clinico para entregar una cotizacion ordenada por familias, cantidades y referencias desde el principal vendedor ELCON Medical en Chile.",
-    featured: true,
-    sortOrder: 20
-  },
-  {
-    id: "elcon-micro-delicado",
-    categoryId: "micro",
-    name: "Instrumental delicado y microcirugia ELCON",
-    reference: "ELCON-MICRO",
-    short: "Piezas finas para procedimientos que requieren precision y manipulacion delicada.",
-    long: "Cotizacion orientada a equipos clinicos que necesitan instrumental fino, seleccion por uso y reposicion controlada.",
-    featured: true,
-    sortOrder: 30
-  },
-  {
-    id: "elcon-traumatologia",
-    categoryId: "trauma",
-    name: "Instrumental ELCON para traumatologia",
-    reference: "ELCON-TRAUMA",
-    short: "Familias de instrumental para apoyo en procedimientos traumatologicos.",
-    long: "Seleccion segun tipo de procedimiento, bandeja existente, piezas faltantes y requerimientos de compra institucional.",
-    featured: false,
-    sortOrder: 40
-  },
-  {
-    id: "elcon-gineco-uro",
-    categoryId: "gineco-uro",
-    name: "Instrumental ELCON ginecologico y urologico",
-    reference: "ELCON-GU",
-    short: "Piezas y sets para procedimientos ginecologicos, urologicos y ambulatorios.",
-    long: "Linea cotizable por especialidad, reposicion de bandejas o armado de set segun requerimiento clinico.",
-    featured: false,
-    sortOrder: 50
-  },
-  {
-    id: "elcon-odontologia",
-    categoryId: "odonto",
-    name: "Instrumental ELCON odontologico y maxilofacial",
-    reference: "ELCON-ODONTO",
-    short: "Instrumental para procedimientos odontologicos, quirurgicos menores y maxilofaciales.",
-    long: "Cotizacion segun procedimiento, pieza requerida, volumen de atencion y necesidades de reposicion.",
-    featured: false,
-    sortOrder: 60
-  },
-  {
-    id: "elcon-reposicion",
-    categoryId: "sets",
-    name: "Reposicion de piezas ELCON",
-    reference: "ELCON-REP",
-    short: "Busqueda de piezas faltantes para completar bandejas existentes.",
-    long: "Servicio comercial para identificar faltantes, ordenar prioridades y cotizar reposiciones por referencia, familia o descripcion tecnica.",
-    featured: false,
-    sortOrder: 70
-  },
-  {
-    id: "elcon-organizacion",
-    categoryId: "sets",
-    name: "Organizacion de bandejas y sets ELCON",
-    reference: "ELCON-ORG",
-    short: "Apoyo para ordenar compras por bandeja, servicio clinico o necesidad recurrente.",
-    long: "Pensado para instituciones que necesitan comprar instrumental de forma progresiva sin perder trazabilidad entre piezas, sets y especialidades.",
-    featured: false,
-    sortOrder: 80
-  }
-];
-
-let products = [...seedProducts];
+let products = [];
 const state = { category: "", search: "", user: null, loadingProducts: false };
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
@@ -151,6 +59,14 @@ function closeModal(id) {
   }
 }
 
+function whatsappUrl(message) {
+  return `https://wa.me/?text=${encodeURIComponent(message)}`;
+}
+
+function openWhatsapp(message) {
+  window.open(whatsappUrl(message), "_blank", "noopener");
+}
+
 function normalizeCategoryId(categoryId, productText = "") {
   if (categories.some((category) => category.id === categoryId)) return categoryId;
   if (categoryId === "instrumental") return "general";
@@ -184,17 +100,6 @@ function mapProductToDb(product) {
   };
 }
 
-function renderServices() {
-  $("#services-grid").innerHTML = services.map(([icon, title, description]) => `
-    <article class="service-card">
-      <span class="service-icon">${escapeHtml(icon)}</span>
-      <h3>${escapeHtml(title)}</h3>
-      <p>${escapeHtml(description)}</p>
-    </article>
-  `).join("");
-  observeRevealItems($$("#services-grid .service-card"));
-}
-
 function categoryOptions(selected = "") {
   return categories.map((category) => (
     `<option value="${category.id}" ${category.id === selected ? "selected" : ""}>${escapeHtml(category.name)}</option>`
@@ -202,7 +107,7 @@ function categoryOptions(selected = "") {
 }
 
 function renderCategories() {
-  $("#filter-cat").innerHTML = '<option value="">Todas las lineas ELCON</option>' + categoryOptions();
+  $("#filter-cat").innerHTML = '<option value="">Todas las categorias</option>' + categoryOptions();
   $("#product-category-input").innerHTML = categoryOptions();
 }
 
@@ -210,20 +115,6 @@ function isElconProduct(product) {
   const currentCategory = categories.some((category) => category.id === product.categoryId);
   const haystack = `${product.name} ${product.reference} ${product.short} ${product.long}`.toLowerCase();
   return currentCategory || haystack.includes("elcon");
-}
-
-function mergeCatalogProducts(dbProducts) {
-  const merged = [];
-  const seen = new Set();
-
-  [...dbProducts, ...seedProducts].forEach((product) => {
-    const key = String(product.reference || product.id).trim().toLowerCase();
-    if (seen.has(key)) return;
-    seen.add(key);
-    merged.push(product);
-  });
-
-  return merged;
 }
 
 function productVisual(product) {
@@ -278,7 +169,7 @@ function renderProducts() {
 
   const emptyMessage = state.loadingProducts
     ? "Cargando productos..."
-    : "No hay resultados para ese filtro.";
+    : "Por ahora no hay productos publicados en el catalogo.";
 
   $("#prod-grid").innerHTML = items.length
     ? items.map(productCard).join("")
@@ -328,7 +219,7 @@ function initMotion() {
   }, { threshold: 0.14, rootMargin: "0px 0px -8% 0px" });
 
   observeRevealItems(revealTargets);
-  observeRevealItems([...$$("#services-grid .service-card"), ...$$("#prod-grid > *")]);
+  observeRevealItems($$("#prod-grid > *"));
 }
 
 function initHeaderBehavior() {
@@ -360,6 +251,22 @@ function initHeaderBehavior() {
   }, { threshold: [0.18, 0.35, 0.6], rootMargin: "-20% 0px -55% 0px" });
 
   sections.forEach((section) => sectionObserver.observe(section));
+}
+
+function initHeroCarousel() {
+  const slides = $$(".hero-slide");
+  if (slides.length < 2) return;
+
+  let activeIndex = slides.findIndex((slide) => slide.classList.contains("is-active"));
+  if (activeIndex < 0) activeIndex = 0;
+  slides[activeIndex].classList.add("is-active");
+
+  window.setInterval(() => {
+    const nextIndex = (activeIndex + 1) % slides.length;
+    slides[activeIndex].classList.remove("is-active");
+    slides[nextIndex].classList.add("is-active");
+    activeIndex = nextIndex;
+  }, 7000);
 }
 
 function bindProductButtons(root) {
@@ -398,13 +305,14 @@ async function loadProducts() {
   state.loadingProducts = false;
 
   if (error) {
-    toast("No se pudo cargar Supabase. Se muestran productos base.", "error");
+    products = [];
+    toast("No se pudo cargar el catalogo. Intenta nuevamente en unos minutos.", "error");
     renderProducts();
     return;
   }
 
   const elconProducts = data.map(mapProductFromDb).filter(isElconProduct);
-  products = mergeCatalogProducts(elconProducts);
+  products = elconProducts;
   renderProducts();
 }
 
@@ -414,13 +322,13 @@ function updateAuthUi() {
   $("#auth-button").classList.toggle("hidden", isAdmin);
   $("#logout-button").classList.toggle("hidden", !isAdmin);
   $("#admin-catalog-tools").classList.toggle("hidden", !isAdmin);
-  $("#admin-user-label").textContent = isAdmin ? state.user.email : "Sesion no iniciada";
+  $("#admin-user-label").textContent = isAdmin ? `Conectado como ${state.user.email}` : "Acceso no iniciado";
   renderProducts();
 }
 
 async function refreshSession() {
   if (!db) {
-    $("#auth-button").title = "Configura Supabase para habilitar login";
+    $("#auth-button").title = "El acceso privado no esta disponible en este momento";
     return;
   }
 
@@ -438,7 +346,7 @@ async function submitLogin(event) {
   event.preventDefault();
 
   if (!db) {
-    toast("Configura supabaseUrl y supabaseKey al inicio de script.js.", "error");
+    toast("El acceso privado no esta disponible en este momento.", "error");
     return;
   }
 
@@ -449,19 +357,19 @@ async function submitLogin(event) {
   const { error } = await db.auth.signInWithPassword({ email, password });
 
   if (error) {
-    toast(error.message || "No se pudo iniciar sesion.", "error");
+    toast("No pudimos iniciar el acceso. Revisa el correo y la contrasena.", "error");
     return;
   }
 
   form.reset();
   closeModal("login-modal");
-  toast("Sesion iniciada. Catalogo en modo administrador.", "success");
+  toast("Acceso iniciado. Ya puedes gestionar el catalogo.", "success");
 }
 
 async function logout() {
   if (!db) return;
   await db.auth.signOut();
-  toast("Sesion cerrada.", "success");
+  toast("Acceso cerrado.", "success");
 }
 
 function openProductModal(id) {
@@ -487,7 +395,7 @@ function openProductModal(id) {
 
 function openProductEditor(id = "") {
   if (!state.user) {
-    toast("Inicia sesion para administrar productos.", "error");
+    toast("Ingresa al acceso privado para gestionar productos.", "error");
     return;
   }
 
@@ -511,7 +419,7 @@ async function saveProduct(event) {
   event.preventDefault();
 
   if (!db || !state.user) {
-    toast("Inicia sesion con Supabase para guardar productos.", "error");
+    toast("Ingresa al acceso privado para guardar productos.", "error");
     return;
   }
 
@@ -529,7 +437,7 @@ async function saveProduct(event) {
   };
 
   if (!product.name || !product.reference || !product.short) {
-    toast("Nombre, referencia y descripcion corta son obligatorios.", "error");
+    toast("Completa nombre, referencia y resumen del producto.", "error");
     return;
   }
 
@@ -541,7 +449,7 @@ async function saveProduct(event) {
   const { data, error } = await request;
 
   if (error) {
-    toast(error.message || "No se pudo guardar el producto.", "error");
+    toast("No se pudo guardar el producto. Revisa los datos e intenta nuevamente.", "error");
     return;
   }
 
@@ -552,46 +460,54 @@ async function saveProduct(event) {
 
   renderProducts();
   closeModal("product-editor-modal");
-  toast(id ? "Producto actualizado." : "Producto agregado.", "success");
+  toast(id ? "Producto actualizado." : "Producto agregado al catalogo.", "success");
 }
 
 async function deleteProduct(id) {
   if (!db || !state.user) {
-    toast("Inicia sesion con Supabase para borrar productos.", "error");
+    toast("Ingresa al acceso privado para borrar productos.", "error");
     return;
   }
 
   const product = products.find((item) => item.id === id);
   if (!product) return;
 
-  const confirmed = window.confirm(`Borrar "${product.name}" del catalogo?`);
+  const confirmed = window.confirm(`Quieres borrar "${product.name}" del catalogo?`);
   if (!confirmed) return;
 
   const { error } = await db.from("products").delete().eq("id", id);
 
   if (error) {
-    toast(error.message || "No se pudo borrar el producto.", "error");
+    toast("No se pudo borrar el producto. Intenta nuevamente.", "error");
     return;
   }
 
   products = products.filter((item) => item.id !== id);
   renderProducts();
-  toast("Producto borrado.", "success");
+  toast("Producto borrado del catalogo.", "success");
 }
 
 function openQuoteFor(productId = "") {
   const product = products.find((item) => item.id === productId);
   const tag = $("#quote-product-tag");
 
+  if (product) {
+    const category = categories.find((item) => item.id === product.categoryId)?.name || "";
+    const details = [
+      `Hola SUPMED, quiero cotizar este producto: ${product.name}.`,
+      product.reference ? `Referencia: ${product.reference}.` : "",
+      category ? `Linea: ${category}.` : "",
+      product.short ? `Detalle: ${product.short}` : ""
+    ].filter(Boolean).join("\n");
+
+    openWhatsapp(details);
+    return;
+  }
+
   $("#quote-product-name").value = product ? product.name : "";
   $("#quote-interest").value = product ? `${product.name} (${product.reference})` : "";
 
-  if (product) {
-    tag.textContent = `Interes: ${product.name}`;
-    tag.classList.remove("hidden");
-  } else {
-    tag.classList.add("hidden");
-  }
+  tag.classList.add("hidden");
 
   openModal("quote-modal");
 }
@@ -611,7 +527,7 @@ function submitQuote(event) {
   };
 
   if (!data.name || !data.email) {
-    toast("Nombre y correo son obligatorios.", "error");
+    toast("Completa tu nombre y correo para enviar la solicitud.", "error");
     return;
   }
 
@@ -661,16 +577,16 @@ function init() {
   $("#login-form").addEventListener("submit", submitLogin);
   $("#product-form").addEventListener("submit", saveProduct);
 
-  renderServices();
   renderCategories();
   renderProducts();
   initMotion();
+  initHeroCarousel();
   initHeaderBehavior();
   refreshSession();
   loadProducts();
 
   if (!db) {
-    toast("Supabase aun no esta configurado. El catalogo usa productos base.", "info");
+    toast("El catalogo aun no tiene productos publicados.", "info");
   }
 }
 
