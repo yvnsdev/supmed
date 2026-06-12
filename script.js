@@ -14,118 +14,101 @@ const hasSupabaseConfig = Boolean(
 const db = hasSupabaseConfig ? supabase : null;
 
 const categories = [
-  { id: "instrumental", name: "Instrumental quirurgico" },
-  { id: "equipamiento", name: "Equipamiento clinico" },
-  { id: "mantencion", name: "Mantencion" },
-  { id: "insumos", name: "Insumos y accesorios" },
-  { id: "alquiler", name: "Alquiler RentaMed" },
-  { id: "habilitacion", name: "Habilitacion sanitaria" }
+  { id: "general", name: "Cirugia general" },
+  { id: "micro", name: "Microcirugia y delicado" },
+  { id: "trauma", name: "Traumatologia" },
+  { id: "gineco-uro", name: "Ginecologia y urologia" },
+  { id: "odonto", name: "Odontologia y maxilofacial" },
+  { id: "sets", name: "Sets y reposicion" }
 ];
 
 const services = [
-  ["IQ", "Venta de instrumental quirurgico ELCON", "Seleccion y suministro de instrumental para pabellon, procedimientos y especialidades clinicas."],
-  ["MP", "Mantencion preventiva y correctiva", "Gestion, planificacion y ejecucion de mantenciones para equipamiento medico."],
-  ["GE", "Gestion de equipamiento clinico", "Apoyo en adquisicion, control operativo y continuidad de equipos medicos."],
-  ["AC", "Accesorios medicos monitorizados", "Venta de partes, accesorios e insumos asociados a equipos medicos."],
-  ["AS", "Asesoria tecnica-profesional", "Acompanamiento durante cualquier etapa del desarrollo de proyectos de salud."],
-  ["HS", "Habilitacion de recintos", "Orientacion para autorizacion sanitaria y cumplimiento de requerimientos tecnicos."],
-  ["OP", "Soluciones operativas", "Respuesta a problematicas del area de la salud con foco practico y tecnico."],
-  ["RA", "Soluciones de alquiler", "Arriendo de equipos medicos o de rehabilitacion para necesidades temporales."]
+  ["N1", "Vendedor numero 1 ELCON", "Catalogo y respuesta comercial desde el principal vendedor de ELCON Medical en Chile."],
+  ["EL", "Catalogo ELCON Medical", "Ordenamiento de familias, referencias y piezas quirurgicas ELCON para solicitudes institucionales."],
+  ["ST", "Sets por especialidad", "Armado de bandejas y combinaciones segun procedimiento, servicio clinico y volumen de uso."],
+  ["RP", "Reposicion de instrumental", "Apoyo para completar sets, reemplazar piezas faltantes y documentar compras recurrentes."],
+  ["CT", "Cotizacion tecnica", "Revision de cantidades, equivalencias, prioridades y disponibilidad antes de emitir una propuesta."],
+  ["IC", "Compra institucional", "Acompanamiento comercial para clinicas, hospitales, centros medicos y profesionales."]
 ];
-
-const sectors = [
-  "Centros medicos",
-  "Clinicas",
-  "Centros de especialidad",
-  "Consultas",
-  "Centros odontologicos",
-  "Centros de rehabilitacion",
-  "CESFAM",
-  "CECOF",
-  "Hospitales",
-  "Profesionales independientes"
-];
-
-const regions = ["Calama", "Antofagasta", "Bio Bio", "Metropolitana", "Araucania", "Magallanes", "Zonas extremas"];
 
 const seedProducts = [
   {
-    id: "instrumental-elcon",
-    categoryId: "instrumental",
-    name: "Instrumental quirurgico ELCON",
-    reference: "SUP-IQ-ELCON",
-    short: "Linea de instrumental quirurgico para pabellon y procedimientos clinicos.",
-    long: "Solucion cotizable segun especialidad, volumen de trabajo, requerimientos tecnicos y disponibilidad.",
+    id: "elcon-cirugia-general",
+    categoryId: "general",
+    name: "Instrumental ELCON para cirugia general",
+    reference: "ELCON-CG-BASE",
+    short: "Pinzas, tijeras, portaagujas, separadores y piezas base para pabellon.",
+    long: "Linea cotizable con SUPMED, vendedor numero 1 de ELCON Medical en Chile, para armar, completar o renovar bandejas de cirugia general segun especialidad, cantidad requerida y disponibilidad.",
     featured: true,
     sortOrder: 10
   },
   {
-    id: "accesorios-monitorizados",
-    categoryId: "insumos",
-    name: "Accesorios medicos monitorizados",
-    reference: "SUP-AM-UPN",
-    short: "Accesorios y partes asociadas a equipos medicos y monitoreo clinico.",
-    long: "Linea orientada a continuidad operativa, reposicion y necesidades de servicios clinicos.",
+    id: "elcon-set-pabellon",
+    categoryId: "sets",
+    name: "Set quirurgico ELCON por especialidad",
+    reference: "ELCON-SET-ESP",
+    short: "Configuracion de sets para compras completas, ampliaciones o reposicion.",
+    long: "Levantamiento de piezas por procedimiento o servicio clinico para entregar una cotizacion ordenada por familias, cantidades y referencias desde el principal vendedor ELCON Medical en Chile.",
     featured: true,
     sortOrder: 20
   },
   {
-    id: "mantencion-equipos",
-    categoryId: "mantencion",
-    name: "Mantencion de equipamiento medico",
-    reference: "SUP-ST-001",
-    short: "Servicio preventivo y correctivo para asegurar disponibilidad y funcionamiento.",
-    long: "Incluye planificacion de mantenciones, respuesta tecnica y apoyo presencial segun cobertura.",
+    id: "elcon-micro-delicado",
+    categoryId: "micro",
+    name: "Instrumental delicado y microcirugia ELCON",
+    reference: "ELCON-MICRO",
+    short: "Piezas finas para procedimientos que requieren precision y manipulacion delicada.",
+    long: "Cotizacion orientada a equipos clinicos que necesitan instrumental fino, seleccion por uso y reposicion controlada.",
     featured: true,
     sortOrder: 30
   },
   {
-    id: "gestion-equipamiento",
-    categoryId: "equipamiento",
-    name: "Gestion de equipamiento clinico",
-    reference: "SUP-GE-010",
-    short: "Seleccion, adquisicion y gestion tecnica de equipos medicos segun necesidad.",
-    long: "Apoyo para elegir equipamiento adecuado, gestionar continuidad y resolver brechas operativas.",
+    id: "elcon-traumatologia",
+    categoryId: "trauma",
+    name: "Instrumental ELCON para traumatologia",
+    reference: "ELCON-TRAUMA",
+    short: "Familias de instrumental para apoyo en procedimientos traumatologicos.",
+    long: "Seleccion segun tipo de procedimiento, bandeja existente, piezas faltantes y requerimientos de compra institucional.",
     featured: false,
     sortOrder: 40
   },
   {
-    id: "habilitacion-recintos",
-    categoryId: "habilitacion",
-    name: "Habilitacion para autorizacion sanitaria",
-    reference: "SUP-HS-020",
-    short: "Acompanamiento tecnico para recintos de salud y exigencias sanitarias.",
-    long: "Asesoria basada en conocimiento de normas sanitarias, constructivas, energeticas y requerimientos del area.",
+    id: "elcon-gineco-uro",
+    categoryId: "gineco-uro",
+    name: "Instrumental ELCON ginecologico y urologico",
+    reference: "ELCON-GU",
+    short: "Piezas y sets para procedimientos ginecologicos, urologicos y ambulatorios.",
+    long: "Linea cotizable por especialidad, reposicion de bandejas o armado de set segun requerimiento clinico.",
     featured: false,
     sortOrder: 50
   },
   {
-    id: "insumos-limpieza",
-    categoryId: "insumos",
-    name: "Insumos clinicos y desinfectantes",
-    reference: "SUP-IC-030",
-    short: "Insumos de limpieza clinicos, desinfectantes y productos complementarios.",
-    long: "Productos cotizables para continuidad operativa y necesidades de centros de salud.",
+    id: "elcon-odontologia",
+    categoryId: "odonto",
+    name: "Instrumental ELCON odontologico y maxilofacial",
+    reference: "ELCON-ODONTO",
+    short: "Instrumental para procedimientos odontologicos, quirurgicos menores y maxilofaciales.",
+    long: "Cotizacion segun procedimiento, pieza requerida, volumen de atencion y necesidades de reposicion.",
     featured: false,
     sortOrder: 60
   },
   {
-    id: "alquiler-monitoreo",
-    categoryId: "alquiler",
-    name: "Alquiler de equipos de monitoreo",
-    reference: "RM-MON-040",
-    short: "Equipos de baja y media complejidad para monitoreo de signos vitales.",
-    long: "Solucion temporal para situaciones transitorias, continuidad de servicio o soporte clinico puntual.",
+    id: "elcon-reposicion",
+    categoryId: "sets",
+    name: "Reposicion de piezas ELCON",
+    reference: "ELCON-REP",
+    short: "Busqueda de piezas faltantes para completar bandejas existentes.",
+    long: "Servicio comercial para identificar faltantes, ordenar prioridades y cotizar reposiciones por referencia, familia o descripcion tecnica.",
     featured: false,
     sortOrder: 70
   },
   {
-    id: "alquiler-rehabilitacion",
-    categoryId: "alquiler",
-    name: "Alquiler de equipamiento de rehabilitacion",
-    reference: "RM-REH-050",
-    short: "Equipos de rehabilitacion disponibles segun necesidad del usuario o institucion.",
-    long: "Servicio respaldado por experiencia SUPMED y planificacion de mantencion para continuidad.",
+    id: "elcon-organizacion",
+    categoryId: "sets",
+    name: "Organizacion de bandejas y sets ELCON",
+    reference: "ELCON-ORG",
+    short: "Apoyo para ordenar compras por bandeja, servicio clinico o necesidad recurrente.",
+    long: "Pensado para instituciones que necesitan comprar instrumental de forma progresiva sin perder trazabilidad entre piezas, sets y especialidades.",
     featured: false,
     sortOrder: 80
   }
@@ -168,10 +151,18 @@ function closeModal(id) {
   }
 }
 
+function normalizeCategoryId(categoryId, productText = "") {
+  if (categories.some((category) => category.id === categoryId)) return categoryId;
+  if (categoryId === "instrumental") return "general";
+  if (productText.toLowerCase().includes("set") || productText.toLowerCase().includes("reposicion")) return "sets";
+  return categoryId;
+}
+
 function mapProductFromDb(row) {
+  const productText = `${row.name} ${row.reference} ${row.short_description} ${row.long_description || ""}`;
   return {
     id: row.id,
-    categoryId: row.category_id,
+    categoryId: normalizeCategoryId(row.category_id, productText),
     name: row.name,
     reference: row.reference,
     short: row.short_description,
@@ -204,12 +195,6 @@ function renderServices() {
   observeRevealItems($$("#services-grid .service-card"));
 }
 
-function renderTags() {
-  $("#sector-list").innerHTML = sectors.map((item) => `<span>${escapeHtml(item)}</span>`).join("");
-  $("#region-list").innerHTML = regions.map((item) => `<span>${escapeHtml(item)}</span>`).join("");
-  observeRevealItems([...$$("#sector-list span"), ...$$("#region-list span")]);
-}
-
 function categoryOptions(selected = "") {
   return categories.map((category) => (
     `<option value="${category.id}" ${category.id === selected ? "selected" : ""}>${escapeHtml(category.name)}</option>`
@@ -217,8 +202,28 @@ function categoryOptions(selected = "") {
 }
 
 function renderCategories() {
-  $("#filter-cat").innerHTML = '<option value="">Todas las categorias</option>' + categoryOptions();
+  $("#filter-cat").innerHTML = '<option value="">Todas las lineas ELCON</option>' + categoryOptions();
   $("#product-category-input").innerHTML = categoryOptions();
+}
+
+function isElconProduct(product) {
+  const currentCategory = categories.some((category) => category.id === product.categoryId);
+  const haystack = `${product.name} ${product.reference} ${product.short} ${product.long}`.toLowerCase();
+  return currentCategory || haystack.includes("elcon");
+}
+
+function mergeCatalogProducts(dbProducts) {
+  const merged = [];
+  const seen = new Set();
+
+  [...dbProducts, ...seedProducts].forEach((product) => {
+    const key = String(product.reference || product.id).trim().toLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    merged.push(product);
+  });
+
+  return merged;
 }
 
 function productVisual(product) {
@@ -323,7 +328,7 @@ function initMotion() {
   }, { threshold: 0.14, rootMargin: "0px 0px -8% 0px" });
 
   observeRevealItems(revealTargets);
-  observeRevealItems([...$$("#services-grid .service-card"), ...$$("#prod-grid > *"), ...$$("#sector-list span"), ...$$("#region-list span")]);
+  observeRevealItems([...$$("#services-grid .service-card"), ...$$("#prod-grid > *")]);
 }
 
 function initHeaderBehavior() {
@@ -398,7 +403,8 @@ async function loadProducts() {
     return;
   }
 
-  products = data.map(mapProductFromDb);
+  const elconProducts = data.map(mapProductFromDb).filter(isElconProduct);
+  products = mergeCatalogProducts(elconProducts);
   renderProducts();
 }
 
@@ -609,7 +615,7 @@ function submitQuote(event) {
     return;
   }
 
-  const subject = encodeURIComponent(`Solicitud SUPMED - ${data.interest || "Asesoria o cotizacion"}`);
+  const subject = encodeURIComponent(`Solicitud ELCON Medical - ${data.interest || "Instrumental quirurgico"}`);
   const body = encodeURIComponent(
     `Nombre: ${data.name}\nCargo: ${data.position}\nInstitucion: ${data.institution}\nTelefono: ${data.phone}\nCorreo: ${data.email}\nInteres: ${data.interest}\n\nMensaje:\n${data.message}`
   );
@@ -656,7 +662,6 @@ function init() {
   $("#product-form").addEventListener("submit", saveProduct);
 
   renderServices();
-  renderTags();
   renderCategories();
   renderProducts();
   initMotion();
