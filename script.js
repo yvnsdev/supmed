@@ -62,7 +62,7 @@ function closeModal(id) {
 }
 
 function whatsappUrl(message) {
-  return `https://wa.me/?text=${encodeURIComponent(message)}`;
+  return `https://wa.me/56989747446?text=${encodeURIComponent(message)}`;
 }
 
 function openWhatsapp(message) {
@@ -635,7 +635,7 @@ function submitQuote(event) {
   );
 
   localStorage.setItem("supmed-last-request", JSON.stringify({ ...data, createdAt: new Date().toISOString() }));
-  window.location.href = `mailto:contacto@supmed.cl?subject=${subject}&body=${body}`;
+  window.location.href = `mailto:sergio.parra@supmed.cl?subject=${subject}&body=${body}`;
   toast("Se abrio tu correo para enviar la solicitud.", "success");
   form.reset();
   closeModal("quote-modal");

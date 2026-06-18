@@ -539,6 +539,17 @@ body.is-admin .admin-actions { display: flex; }
 }
 .final-cta h2 { margin: 0 auto; max-width: 780px; color: #fff; }
 .final-cta p { margin: 24px auto 0; max-width: 740px; color: rgba(255,255,255,.84); }
+.contact-details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 22px;
+  margin: 22px auto 0;
+  color: #fff;
+  font-size: .95rem;
+}
+.contact-details a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.contact-details span { width: 100%; }
 
 .site-footer {
   background: linear-gradient(135deg, #0b2447, #0c6dad);
