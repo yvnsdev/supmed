@@ -31,8 +31,9 @@ const CATEGORY_NAMES = {
 
 let products = [];
 let categories = [];
+let catalogFilters = [];
 const PRODUCTS_PER_PAGE = 8;
-const state = { category: "", search: "", user: null, loadingProducts: false, page: 1 };
+const state = { filter: "", search: "", user: null, loadingProducts: false, page: 1 };
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 let revealObserver = null;
@@ -106,8 +107,9 @@ async function uploadProductImage(file, reference) {
 }
 
 function categoryName(categoryId) {
-  if (CATEGORY_NAMES[categoryId]) return CATEGORY_NAMES[categoryId];
-  return String(categoryId || "")
+  const value = String(categoryId || "");
+  if (CATEGORY_NAMES[value.toLowerCase()]) return CATEGORY_NAMES[value.toLowerCase()];
+  return value
     .replace(/[-_]+/g, " ")
     .replace(/^\w/, (letter) => letter.toUpperCase());
 }
@@ -117,8 +119,12 @@ function updateCategories() {
     .map((id) => ({ id, name: categoryName(id) }))
     .sort((a, b) => a.name.localeCompare(b.name, "es"));
 
-  if (state.category && !categories.some((category) => category.id === state.category)) {
-    state.category = "";
+  catalogFilters = [...new Set(products.map((product) => product.filter).filter(Boolean))]
+    .map((id) => ({ id, name: categoryName(id) }))
+    .sort((a, b) => a.name.localeCompare(b.name, "es"));
+
+  if (state.filter && !catalogFilters.some((filter) => filter.id === state.filter)) {
+    state.filter = "";
     state.page = 1;
   }
 }
@@ -127,6 +133,7 @@ function mapProductFromDb(row) {
   return {
     id: row.id,
     categoryId: row.category_id || "",
+    filter: row.filter || "",
     name: row.name,
     reference: row.reference,
     short: row.short_description,
@@ -143,6 +150,7 @@ function mapProductFromDb(row) {
 function mapProductToDb(product) {
   const payload = {
     category_id: product.categoryId,
+    filter: product.filter || "",
     name: product.name,
     reference: product.reference,
     short_description: product.short,
@@ -160,6 +168,12 @@ function mapProductToDb(product) {
 function categoryOptions(selected = "") {
   return categories.map((category) => (
     `<option value="${escapeHtml(category.id)}" ${category.id === selected ? "selected" : ""}>${escapeHtml(category.name)}</option>`
+  )).join("");
+}
+
+function filterOptions(selected = "") {
+  return catalogFilters.map((filter) => (
+    `<option value="${escapeHtml(filter.id)}" ${filter.id === selected ? "selected" : ""}>${escapeHtml(filter.name)}</option>`
   )).join("");
 }
 
@@ -182,10 +196,13 @@ function variantOptions(value) {
 }
 
 function renderCategories() {
-  $("#filter-cat").innerHTML = '<option value="">Todas las categorias</option>' + categoryOptions(state.category);
+  $("#filter-cat").innerHTML = '<option value="">Todas las categorias</option>' + filterOptions(state.filter);
   $("#product-category-input").innerHTML = categories.length
     ? categoryOptions()
     : '<option value="">Sin categorias disponibles</option>';
+  $("#product-filter-options").innerHTML = catalogFilters
+    .map((filter) => `<option value="${escapeHtml(filter.id)}"></option>`)
+    .join("");
 }
 
 function productVisual(product) {
@@ -234,14 +251,14 @@ function renderProducts() {
   const query = state.search.trim().toLowerCase();
   let items = [...products].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
-  if (state.category) {
-    items = items.filter((product) => product.categoryId === state.category);
+  if (state.filter) {
+    items = items.filter((product) => product.filter === state.filter);
   }
 
   if (query) {
     items = items.filter((product) => {
       const category = categories.find((item) => item.id === product.categoryId)?.name || "";
-      const haystack = `${product.name} ${product.reference} ${product.short} ${product.long} ${category}`.toLowerCase();
+      const haystack = `${product.name} ${product.reference} ${product.short} ${product.long} ${category} ${product.filter}`.toLowerCase();
       return haystack.includes(query);
     });
   }
@@ -545,6 +562,7 @@ function openProductEditor(id = "") {
   fields.name.value = product?.name || "";
   fields.reference.value = product?.reference || "";
   fields.categoryId.value = product?.categoryId || categories[0]?.id || "";
+  fields.filter.value = product?.filter || "";
   fields.sortOrder.value = product?.sortOrder ?? "";
   fields.short.value = product?.short || "";
   fields.long.value = product?.long || "";
@@ -573,6 +591,7 @@ async function saveProduct(event) {
   const id = fields.id.value;
   const product = {
     categoryId: fields.categoryId.value,
+    filter: fields.filter.value.trim(),
     name: fields.name.value.trim(),
     reference: fields.reference.value.trim(),
     short: fields.short.value.trim(),
@@ -585,8 +604,8 @@ async function saveProduct(event) {
   const currentProduct = id ? products.find((item) => item.id === id) : null;
   const imageFile = fields.image.files?.[0] || null;
 
-  if (!product.name || !product.reference || !product.short) {
-    toast("Completa nombre, referencia y resumen del producto.", "error");
+  if (!product.name || !product.reference || !product.categoryId || !product.filter || !product.short) {
+    toast("Completa nombre, referencia, categoria, filtro y resumen del producto.", "error");
     return;
   }
 
@@ -746,7 +765,7 @@ function init() {
   $("#add-product-button").addEventListener("click", () => openProductEditor());
 
   $("#filter-cat").addEventListener("change", (event) => {
-    state.category = event.target.value;
+    state.filter = event.target.value;
     state.page = 1;
     renderProducts();
   });

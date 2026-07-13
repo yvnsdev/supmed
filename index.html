@@ -316,6 +316,12 @@
               <div class="field"><label>Orden</label><input name="sortOrder" type="number" min="0" step="1" placeholder="0"></div>
             </div>
             <div class="field">
+              <label>Filtro del catalogo *</label>
+              <input name="filter" list="product-filter-options" required placeholder="Ej: Equipamiento o Instrumental">
+              <datalist id="product-filter-options"></datalist>
+              <small class="field-help">Este valor determina en que opcion del filtro publico aparece el producto.</small>
+            </div>
+            <div class="field">
               <label>Imagen del producto</label>
               <input name="image" type="file" accept="image/*">
               <small id="product-current-image" class="field-help">Puedes subir una imagen JPG, PNG o WebP.</small>

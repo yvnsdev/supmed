@@ -16,6 +16,7 @@ create table if not exists public.products (
       'habilitacion'
     )
   ),
+  filter text not null default '',
   name text not null,
   reference text not null,
   short_description text not null,
