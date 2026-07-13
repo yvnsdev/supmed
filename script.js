@@ -14,16 +14,23 @@ const hasSupabaseConfig = Boolean(
 );
 const db = hasSupabaseConfig ? supabase : null;
 
-const categories = [
-  { id: "general", name: "Cirugia general" },
-  { id: "micro", name: "Microcirugia y delicado" },
-  { id: "trauma", name: "Traumatologia" },
-  { id: "gineco-uro", name: "Ginecologia y urologia" },
-  { id: "odonto", name: "Odontologia y maxilofacial" },
-  { id: "sets", name: "Sets y reposicion" }
-];
+const CATEGORY_NAMES = {
+  general: "Cirugia general",
+  micro: "Microcirugia y delicado",
+  trauma: "Traumatologia",
+  "gineco-uro": "Ginecologia y urologia",
+  odonto: "Odontologia y maxilofacial",
+  sets: "Sets y reposicion",
+  instrumental: "Instrumental",
+  equipamiento: "Equipamiento",
+  mantencion: "Mantencion",
+  insumos: "Insumos",
+  alquiler: "Alquiler",
+  habilitacion: "Habilitacion"
+};
 
 let products = [];
+let categories = [];
 const PRODUCTS_PER_PAGE = 8;
 const state = { category: "", search: "", user: null, loadingProducts: false, page: 1 };
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -98,24 +105,36 @@ async function uploadProductImage(file, reference) {
   return { imagePath: path, imageUrl: data.publicUrl };
 }
 
-function normalizeCategoryId(categoryId, productText = "") {
-  if (categories.some((category) => category.id === categoryId)) return categoryId;
-  if (categoryId === "instrumental") return "general";
-  if (productText.toLowerCase().includes("set") || productText.toLowerCase().includes("reposicion")) return "sets";
-  return categoryId;
+function categoryName(categoryId) {
+  if (CATEGORY_NAMES[categoryId]) return CATEGORY_NAMES[categoryId];
+  return String(categoryId || "")
+    .replace(/[-_]+/g, " ")
+    .replace(/^\w/, (letter) => letter.toUpperCase());
+}
+
+function updateCategories() {
+  categories = [...new Set(products.map((product) => product.categoryId).filter(Boolean))]
+    .map((id) => ({ id, name: categoryName(id) }))
+    .sort((a, b) => a.name.localeCompare(b.name, "es"));
+
+  if (state.category && !categories.some((category) => category.id === state.category)) {
+    state.category = "";
+    state.page = 1;
+  }
 }
 
 function mapProductFromDb(row) {
-  const productText = `${row.name} ${row.reference} ${row.short_description} ${row.long_description || ""}`;
   return {
     id: row.id,
-    categoryId: normalizeCategoryId(row.category_id, productText),
+    categoryId: row.category_id || "",
     name: row.name,
     reference: row.reference,
     short: row.short_description,
     long: row.long_description || "",
     imageUrl: row.image_url || "",
     imagePath: row.image_path || "",
+    variants: row.variants || "",
+    hasVariants: Boolean(row.has_variants),
     featured: Boolean(row.featured),
     sortOrder: row.sort_order ?? 0
   };
@@ -128,6 +147,8 @@ function mapProductToDb(product) {
     reference: product.reference,
     short_description: product.short,
     long_description: product.long,
+    variants: product.variants || "",
+    has_variants: Boolean(product.hasVariants),
     featured: Boolean(product.featured),
     sort_order: Number(product.sortOrder || 0)
   };
@@ -138,19 +159,33 @@ function mapProductToDb(product) {
 
 function categoryOptions(selected = "") {
   return categories.map((category) => (
-    `<option value="${category.id}" ${category.id === selected ? "selected" : ""}>${escapeHtml(category.name)}</option>`
+    `<option value="${escapeHtml(category.id)}" ${category.id === selected ? "selected" : ""}>${escapeHtml(category.name)}</option>`
   )).join("");
 }
 
-function renderCategories() {
-  $("#filter-cat").innerHTML = '<option value="">Todas las categorias</option>' + categoryOptions();
-  $("#product-category-input").innerHTML = categoryOptions();
+function variantOptions(value) {
+  const text = String(value || "").trim();
+  if (!text) return [];
+
+  if (text.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(text);
+      if (Array.isArray(parsed)) {
+        return [...new Set(parsed.map((item) => String(item).trim()).filter(Boolean))];
+      }
+    } catch (_) {
+      // Continue with the plain-text format.
+    }
+  }
+
+  return [...new Set(text.split(/[\n;|,]+/).map((item) => item.trim()).filter(Boolean))];
 }
 
-function isElconProduct(product) {
-  const currentCategory = categories.some((category) => category.id === product.categoryId);
-  const haystack = `${product.name} ${product.reference} ${product.short} ${product.long}`.toLowerCase();
-  return currentCategory || haystack.includes("elcon");
+function renderCategories() {
+  $("#filter-cat").innerHTML = '<option value="">Todas las categorias</option>' + categoryOptions(state.category);
+  $("#product-category-input").innerHTML = categories.length
+    ? categoryOptions()
+    : '<option value="">Sin categorias disponibles</option>';
 }
 
 function productVisual(product) {
@@ -349,7 +384,14 @@ function initHeroCarousel() {
 
 function bindProductButtons(root) {
   root.querySelectorAll("[data-quote-prod]").forEach((button) => {
-    button.addEventListener("click", () => openQuoteFor(button.dataset.quoteProd));
+    button.addEventListener("click", () => {
+      const product = products.find((item) => item.id === button.dataset.quoteProd);
+      if (product?.hasVariants && variantOptions(product.variants).length) {
+        openProductModal(product.id);
+        return;
+      }
+      openQuoteFor(button.dataset.quoteProd);
+    });
   });
 
   root.querySelectorAll("[data-view-prod]").forEach((button) => {
@@ -384,13 +426,16 @@ async function loadProducts() {
 
   if (error) {
     products = [];
+    updateCategories();
+    renderCategories();
     toast("No se pudo cargar el catalogo. Intenta nuevamente en unos minutos.", "error");
     renderProducts();
     return;
   }
 
-  const elconProducts = data.map(mapProductFromDb).filter(isElconProduct);
-  products = elconProducts;
+  products = data.map(mapProductFromDb);
+  updateCategories();
+  renderCategories();
   renderProducts();
 }
 
@@ -455,6 +500,7 @@ function openProductModal(id) {
   if (!product) return;
 
   const category = categories.find((item) => item.id === product.categoryId);
+  const variants = product.hasVariants ? variantOptions(product.variants) : [];
   $("#product-modal-title").textContent = product.name;
   $("#product-modal .modal-body").innerHTML = `
     ${productVisual(product)}
@@ -463,10 +509,24 @@ function openProductModal(id) {
     <p style="color:var(--muted);margin-bottom:12px">Ref. ${escapeHtml(product.reference)}</p>
     <p style="margin-bottom:10px">${escapeHtml(product.short)}</p>
     <p>${escapeHtml(product.long)}</p>
+    ${variants.length ? `
+      <label class="product-variant-picker" for="product-modal-variant">
+        <span>Variante</span>
+        <select id="product-modal-variant">
+          <option value="">Selecciona una opcion</option>
+          ${variants.map((variant) => `<option value="${escapeHtml(variant)}">${escapeHtml(variant)}</option>`).join("")}
+        </select>
+      </label>
+    ` : ""}
   `;
   $("#product-modal-quote").onclick = () => {
+    const variant = $("#product-modal-variant")?.value || "";
+    if (variants.length && !variant) {
+      toast("Selecciona una variante para cotizar.", "error");
+      return;
+    }
     closeModal("product-modal");
-    openQuoteFor(product.id);
+    openQuoteFor(product.id, variant);
   };
   openModal("product-modal");
 }
@@ -484,12 +544,15 @@ function openProductEditor(id = "") {
   fields.id.value = product?.id || "";
   fields.name.value = product?.name || "";
   fields.reference.value = product?.reference || "";
-  fields.categoryId.value = product?.categoryId || categories[0].id;
+  fields.categoryId.value = product?.categoryId || categories[0]?.id || "";
   fields.sortOrder.value = product?.sortOrder ?? "";
   fields.short.value = product?.short || "";
   fields.long.value = product?.long || "";
+  fields.variants.value = product?.variants || "";
   fields.image.value = "";
+  fields.hasVariants.checked = Boolean(product?.hasVariants);
   fields.featured.checked = Boolean(product?.featured);
+  syncVariantsField();
   $("#product-current-image").textContent = product?.imageUrl
     ? "Este producto ya tiene una imagen. Puedes subir otra para reemplazarla."
     : "Puedes subir una imagen JPG, PNG o WebP.";
@@ -514,6 +577,8 @@ async function saveProduct(event) {
     reference: fields.reference.value.trim(),
     short: fields.short.value.trim(),
     long: fields.long.value.trim(),
+    variants: fields.variants.value.trim(),
+    hasVariants: fields.hasVariants.checked,
     featured: fields.featured.checked,
     sortOrder: fields.sortOrder.value ? Number(fields.sortOrder.value) : 0
   };
@@ -522,6 +587,11 @@ async function saveProduct(event) {
 
   if (!product.name || !product.reference || !product.short) {
     toast("Completa nombre, referencia y resumen del producto.", "error");
+    return;
+  }
+
+  if (product.hasVariants && !variantOptions(product.variants).length) {
+    toast("Agrega al menos una variante o desactiva la opcion de variantes.", "error");
     return;
   }
 
@@ -556,6 +626,8 @@ async function saveProduct(event) {
     ? products.map((item) => item.id === id ? saved : item)
     : [...products, saved];
 
+  updateCategories();
+  renderCategories();
   renderProducts();
   closeModal("product-editor-modal");
   toast(id ? "Producto actualizado." : "Producto agregado al catalogo.", "success");
@@ -581,11 +653,13 @@ async function deleteProduct(id) {
   }
 
   products = products.filter((item) => item.id !== id);
+  updateCategories();
+  renderCategories();
   renderProducts();
   toast("Producto borrado del catalogo.", "success");
 }
 
-function openQuoteFor(productId = "") {
+function openQuoteFor(productId = "", variant = "") {
   const product = products.find((item) => item.id === productId);
   const tag = $("#quote-product-tag");
 
@@ -594,6 +668,7 @@ function openQuoteFor(productId = "") {
     const details = [
       `Hola SUPMED, quiero cotizar este producto: ${product.name}.`,
       product.reference ? `Referencia: ${product.reference}.` : "",
+      variant ? `Variante: ${variant}.` : "",
       category ? `Linea: ${category}.` : "",
       product.short ? `Detalle: ${product.short}` : ""
     ].filter(Boolean).join("\n");
@@ -608,6 +683,13 @@ function openQuoteFor(productId = "") {
   tag.classList.add("hidden");
 
   openModal("quote-modal");
+}
+
+function syncVariantsField() {
+  const form = $("#product-form");
+  const enabled = form.elements.hasVariants.checked;
+  $("#product-variants-field").classList.toggle("hidden", !enabled);
+  form.elements.variants.disabled = !enabled;
 }
 
 function submitQuote(event) {
@@ -676,6 +758,7 @@ function init() {
   $("#quote-form").addEventListener("submit", submitQuote);
   $("#login-form").addEventListener("submit", submitLogin);
   $("#product-form").addEventListener("submit", saveProduct);
+  $("#product-form").elements.hasVariants.addEventListener("change", syncVariantsField);
 
   renderCategories();
   renderProducts();

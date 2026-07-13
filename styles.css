@@ -623,7 +623,32 @@ body.is-admin .admin-actions { display: flex; }
   font: inherit;
 }
 .field textarea { min-height: 112px; resize: vertical; }
+.field textarea.variants-input { min-height: 78px; }
 .field-help { color: var(--muted); font-size: .82rem; }
+.product-variant-picker {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-blue);
+  color: var(--ink);
+  font-size: .88rem;
+  font-weight: 800;
+}
+.product-variant-picker select {
+  min-width: 0;
+  width: 100%;
+  padding: 8px 34px 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) - 4px);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
 .check-field {
   display: inline-flex;
   align-items: center;

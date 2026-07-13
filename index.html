@@ -322,6 +322,12 @@
             </div>
             <div class="field"><label>Resumen del producto *</label><input name="short" required></div>
             <div class="field"><label>Detalle adicional</label><textarea name="long" placeholder="Agrega usos sugeridos, caracteristicas, condiciones o informacion relevante..."></textarea></div>
+            <label class="check-field"><input name="hasVariants" type="checkbox"> Este producto tiene variantes</label>
+            <div id="product-variants-field" class="field hidden">
+              <label>Variantes</label>
+              <textarea class="variants-input" name="variants" placeholder="Una por linea, por ejemplo:&#10;14 cm&#10;16 cm&#10;18 cm"></textarea>
+              <small class="field-help">Escribe una variante por linea. Tambien puedes separarlas con coma o punto y coma.</small>
+            </div>
             <label class="check-field"><input name="featured" type="checkbox"> Mostrar como destacado</label>
             <div class="modal-actions">
               <button type="submit" class="btn btn-primary">Guardar producto</button>

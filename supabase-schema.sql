@@ -20,6 +20,8 @@ create table if not exists public.products (
   reference text not null,
   short_description text not null,
   long_description text default '',
+  variants text not null default '',
+  has_variants boolean not null default false,
   image_url text,
   image_path text,
   featured boolean not null default false,
