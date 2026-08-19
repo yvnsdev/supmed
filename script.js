@@ -742,6 +742,51 @@ function submitQuote(event) {
   closeModal("quote-modal");
 }
 
+function initBaseChat() {
+  const form = $("#chat-form");
+  const input = $("#chat-input");
+  const messages = $("#chat-messages");
+  if (!form || !input || !messages) return;
+
+  const answers = {
+    pieza: "Sí. Puedes enviarnos el nombre, referencia o una descripción de la pieza. Si indicas el uso clínico, podremos orientar mejor la búsqueda.",
+    sets: "Sí. Revisamos requerimientos de piezas, sets y reposiciones para ordenar la solicitud antes de cotizar.",
+    solicitud: "Para comenzar, indica el producto o especialidad, cantidad aproximada, uso esperado y plazo requerido. Una referencia o fotografía también ayuda."
+  };
+
+  const addMessage = (text, type) => {
+    const bubble = document.createElement("div");
+    bubble.className = `chat-bubble ${type}`;
+    bubble.textContent = text;
+    messages.appendChild(bubble);
+    messages.scrollTop = messages.scrollHeight;
+  };
+
+  const getAnswer = (question) => {
+    const normalized = question.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    if (normalized.includes("pieza") || normalized.includes("referencia")) return answers.pieza;
+    if (normalized.includes("set") || normalized.includes("bandeja") || normalized.includes("completar")) return answers.sets;
+    if (normalized.includes("cotiz") || normalized.includes("solicitud") || normalized.includes("necesito") || normalized.includes("informacion")) return answers.solicitud;
+    return "Por ahora puedo responder dudas básicas sobre piezas, sets y cómo iniciar una cotización. Para disponibilidad, precios o productos específicos, escríbenos y te ayudaremos directamente.";
+  };
+
+  const answerQuestion = (question) => {
+    const cleanQuestion = question.trim();
+    if (!cleanQuestion) return;
+    addMessage(cleanQuestion, "user");
+    input.value = "";
+    window.setTimeout(() => addMessage(getAnswer(cleanQuestion), "bot"), 260);
+  };
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    answerQuestion(input.value);
+  });
+  $$('[data-chat-question]').forEach((button) => {
+    button.addEventListener("click", () => answerQuestion(button.textContent));
+  });
+}
+
 function init() {
   $("#menu-toggle").addEventListener("click", () => {
     const isOpen = $("#main-nav").classList.toggle("open");
@@ -784,6 +829,7 @@ function init() {
   initMotion();
   initHeroCarousel();
   initHeaderBehavior();
+  initBaseChat();
   refreshSession();
   loadProducts();
 
