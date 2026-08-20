@@ -171,6 +171,17 @@ function categoryOptions(selected = "") {
   )).join("");
 }
 
+function normalizeSearchText(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function compactSearchText(value) {
+  return normalizeSearchText(value).replace(/[^a-z0-9]+/g, "");
+}
+
 function filterOptions(selected = "") {
   return catalogFilters.map((filter) => (
     `<option value="${escapeHtml(filter.id)}" ${filter.id === selected ? "selected" : ""}>${escapeHtml(filter.name)}</option>`
@@ -248,7 +259,8 @@ function productCard(product) {
 }
 
 function renderProducts() {
-  const query = state.search.trim().toLowerCase();
+  const query = normalizeSearchText(state.search.trim());
+  const compactQuery = compactSearchText(query);
   let items = [...products].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
   if (state.filter) {
@@ -258,8 +270,10 @@ function renderProducts() {
   if (query) {
     items = items.filter((product) => {
       const category = categories.find((item) => item.id === product.categoryId)?.name || "";
-      const haystack = `${product.name} ${product.reference} ${product.short} ${product.long} ${category} ${product.filter}`.toLowerCase();
-      return haystack.includes(query);
+      const haystack = normalizeSearchText(`${product.name} ${product.reference} ${product.short} ${product.long} ${category} ${product.filter}`);
+      // La forma compacta permite encontrar referencias aunque se escriban con
+      // guiones, espacios o separadores distintos: 122-230, 122 230 y 122230.
+      return haystack.includes(query) || compactSearchText(haystack).includes(compactQuery);
     });
   }
 
@@ -711,7 +725,7 @@ function syncVariantsField() {
   form.elements.variants.disabled = !enabled;
 }
 
-function submitQuote(event) {
+async function submitQuote(event) {
   event.preventDefault();
   const form = event.target;
   const fields = form.elements;
@@ -730,14 +744,22 @@ function submitQuote(event) {
     return;
   }
 
-  const subject = encodeURIComponent(`Solicitud ELCON Medical - ${data.interest || "Instrumental quirurgico"}`);
-  const body = encodeURIComponent(
-    `Nombre: ${data.name}\nCargo: ${data.position}\nInstitucion: ${data.institution}\nTelefono: ${data.phone}\nCorreo: ${data.email}\nInteres: ${data.interest}\n\nMensaje:\n${data.message}`
-  );
+  const message = [
+    "Hola SUPMED, quiero solicitar una cotizacion.",
+    `Nombre: ${data.name}`,
+    `Cargo: ${data.position || "No indicado"}`,
+    `Institucion: ${data.institution || "No indicada"}`,
+    `Telefono: ${data.phone || "No indicado"}`,
+    `Correo: ${data.email}`,
+    `Producto o especialidad: ${data.interest || "No indicado"}`,
+    "",
+    "Mensaje:",
+    data.message || "Sin mensaje adicional"
+  ].join("\n");
 
   localStorage.setItem("supmed-last-request", JSON.stringify({ ...data, createdAt: new Date().toISOString() }));
-  window.location.href = `mailto:sergio.parra@supmed.cl?subject=${subject}&body=${body}`;
-  toast("Se abrio tu correo para enviar la solicitud.", "success");
+  openWhatsapp(message);
+  toast("Abrimos WhatsApp con tu solicitud lista para enviar.", "success");
   form.reset();
   closeModal("quote-modal");
 }
