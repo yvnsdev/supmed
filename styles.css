@@ -418,6 +418,23 @@ section { position: relative; padding: 118px 0; background: #fff; }
 }
 .admin-catalog-tools strong { display: block; color: var(--brand-dark); }
 .admin-catalog-tools span { color: var(--ink-soft); font-size: .9rem; }
+.admin-quotes-panel {
+  margin: 0 0 24px;
+  padding: 20px;
+  border: 1px solid #bcd6e9;
+  border-radius: var(--radius);
+  background: #fff;
+}
+.admin-quotes-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.admin-quotes-head strong { display: block; color: var(--brand-dark); }
+.admin-quotes-head span { color: var(--ink-soft); font-size: .9rem; }
+.quote-requests-list { display: grid; gap: 12px; max-height: 640px; overflow: auto; padding-right: 4px; }
+.quote-request-card { padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-soft); }
+.quote-request-card p { margin-top: 6px; font-size: .92rem; overflow-wrap: anywhere; }
+.quote-request-card a { color: var(--brand-dark); text-decoration: underline; }
+.quote-request-title { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.quote-request-title time { color: var(--muted); font-size: .8rem; white-space: nowrap; }
+.quote-requests-empty { padding: 14px 0; }
 .product-card { overflow: hidden; display: flex; flex-direction: column; }
 .product-visual {
   min-height: 170px;

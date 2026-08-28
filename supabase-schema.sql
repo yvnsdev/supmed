@@ -76,6 +76,69 @@ on public.products for delete
 to authenticated
 using (true);
 
+create table if not exists public.quote_requests (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  position text not null default '',
+  institution text not null default '',
+  phone text not null default '',
+  email text not null,
+  product_name text not null default '',
+  interest text not null default '',
+  message text not null default '',
+  status text not null default 'new' check (status in ('new', 'contacted', 'quoting', 'sent', 'won', 'lost', 'archived')),
+  priority text not null default 'normal' check (priority in ('low', 'normal', 'high', 'urgent')),
+  internal_notes text not null default '',
+  updated_at timestamptz not null default now(),
+  created_at timestamptz not null default now()
+);
+
+alter table public.quote_requests add column if not exists status text not null default 'new';
+alter table public.quote_requests add column if not exists priority text not null default 'normal';
+alter table public.quote_requests add column if not exists internal_notes text not null default '';
+alter table public.quote_requests add column if not exists updated_at timestamptz not null default now();
+
+do $$
+begin
+  if not exists (select 1 from pg_constraint where conname = 'quote_requests_status_check') then
+    alter table public.quote_requests add constraint quote_requests_status_check
+      check (status in ('new', 'contacted', 'quoting', 'sent', 'won', 'lost', 'archived'));
+  end if;
+  if not exists (select 1 from pg_constraint where conname = 'quote_requests_priority_check') then
+    alter table public.quote_requests add constraint quote_requests_priority_check
+      check (priority in ('low', 'normal', 'high', 'urgent'));
+  end if;
+end $$;
+
+drop trigger if exists quote_requests_set_updated_at on public.quote_requests;
+create trigger quote_requests_set_updated_at
+before update on public.quote_requests
+for each row execute function public.set_updated_at();
+
+create index if not exists quote_requests_created_at_idx
+on public.quote_requests (created_at desc);
+
+alter table public.quote_requests enable row level security;
+
+drop policy if exists "Visitantes pueden crear cotizaciones" on public.quote_requests;
+create policy "Visitantes pueden crear cotizaciones"
+on public.quote_requests for insert
+to anon, authenticated
+with check (true);
+
+drop policy if exists "Usuarios autenticados pueden ver cotizaciones" on public.quote_requests;
+create policy "Usuarios autenticados pueden ver cotizaciones"
+on public.quote_requests for select
+to authenticated
+using (true);
+
+drop policy if exists "Usuarios autenticados pueden actualizar cotizaciones" on public.quote_requests;
+create policy "Usuarios autenticados pueden actualizar cotizaciones"
+on public.quote_requests for update
+to authenticated
+using (true)
+with check (true);
+
 insert into storage.buckets
   (id, name, public, file_size_limit, allowed_mime_types)
 values

@@ -95,8 +95,7 @@
           <a href="#preguntas">Asistente</a>
           <a href="#contacto">Contacto</a>
           <button type="button" class="nav-quote quote-trigger">Cotizar</button>
-          <button id="auth-button" class="nav-access" type="button">Acceso</button>
-          <button id="logout-button" class="nav-access hidden" type="button">Salir</button>
+          <a class="nav-access" href="admin.html">Acceso</a>
         </nav>
       </div>
     </header>
@@ -227,13 +226,6 @@
             <span class="eyebrow">Catálogo ELCON</span>
             <h2>Explora productos listos para cotizar.</h2>
             <p class="lead">Busca por nombre, especialidad, familia o código. Si no encuentras lo que necesitas, cuéntanos y lo revisamos contigo.</p>
-          </div>
-          <div id="admin-catalog-tools" class="admin-catalog-tools hidden">
-            <div>
-              <strong>Panel de productos</strong>
-              <span id="admin-user-label">Acceso activo</span>
-            </div>
-            <button id="add-product-button" class="btn btn-primary btn-sm" type="button">Agregar producto</button>
           </div>
           <div class="catalog-toolbar">
             <span class="search-icon" aria-hidden="true">⌕</span>
@@ -404,7 +396,7 @@
             <div class="field"><label>Correo *</label><input name="email" type="email" required></div>
             <div class="field"><label>Producto o especialidad de interes</label><input id="quote-interest" name="interest"></div>
             <div class="field"><label>Mensaje</label><textarea name="message" placeholder="Cuentanos que producto buscas, cantidad aproximada, uso o plazo requerido..."></textarea></div>
-            <button type="submit" class="btn btn-primary">Enviar por WhatsApp</button>
+            <button type="submit" class="btn btn-primary">Enviar solicitud</button>
           </form>
         </div>
       </div>
@@ -418,70 +410,7 @@
         </div>
         <div class="modal-body"></div>
         <div class="modal-foot">
-          <button id="product-modal-quote" type="button" class="btn btn-primary">Cotizar por WhatsApp</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="login-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Acceso privado">
-      <div class="modal modal-sm">
-        <div class="modal-head">
-          <h3>Acceso privado</h3>
-          <button class="close-x" type="button" data-close="login-modal" aria-label="Cerrar">&times;</button>
-        </div>
-        <div class="modal-body">
-          <p class="modal-note">Ingresa con tu correo y contrasena para gestionar los productos del catalogo.</p>
-          <form id="login-form" class="quote-form">
-            <div class="field"><label>Correo *</label><input name="email" type="email" autocomplete="email" required></div>
-            <div class="field"><label>Contrasena *</label><input name="password" type="password" autocomplete="current-password" required></div>
-            <button type="submit" class="btn btn-primary">Ingresar</button>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <div id="product-editor-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Editor de producto">
-      <div class="modal">
-        <div class="modal-head">
-          <h3 id="product-editor-title">Agregar producto</h3>
-          <button class="close-x" type="button" data-close="product-editor-modal" aria-label="Cerrar">&times;</button>
-        </div>
-        <div class="modal-body">
-          <form id="product-form" class="quote-form">
-            <input type="hidden" name="id">
-            <div class="row-2">
-              <div class="field"><label>Nombre *</label><input name="name" required></div>
-              <div class="field"><label>Referencia *</label><input name="reference" required></div>
-            </div>
-            <div class="row-2">
-              <div class="field"><label>Categoria *</label><select id="product-category-input" name="categoryId" required></select></div>
-              <div class="field"><label>Orden</label><input name="sortOrder" type="number" min="0" step="1" placeholder="0"></div>
-            </div>
-            <div class="field">
-              <label>Filtro del catalogo *</label>
-              <input name="filter" list="product-filter-options" required placeholder="Ej: Equipamiento o Instrumental">
-              <datalist id="product-filter-options"></datalist>
-              <small class="field-help">Este valor determina en que opcion del filtro publico aparece el producto.</small>
-            </div>
-            <div class="field">
-              <label>Imagen del producto</label>
-              <input name="image" type="file" accept="image/*">
-              <small id="product-current-image" class="field-help">Puedes subir una imagen JPG, PNG o WebP.</small>
-            </div>
-            <div class="field"><label>Resumen del producto *</label><input name="short" required></div>
-            <div class="field"><label>Detalle adicional</label><textarea name="long" placeholder="Agrega usos sugeridos, caracteristicas, condiciones o informacion relevante..."></textarea></div>
-            <label class="check-field"><input name="hasVariants" type="checkbox"> Este producto tiene variantes</label>
-            <div id="product-variants-field" class="field hidden">
-              <label>Variantes</label>
-              <textarea class="variants-input" name="variants" placeholder="Una por linea, por ejemplo:&#10;14 cm&#10;16 cm&#10;18 cm"></textarea>
-              <small class="field-help">Escribe una variante por linea. Tambien puedes separarlas con coma o punto y coma.</small>
-            </div>
-            <label class="check-field"><input name="featured" type="checkbox"> Mostrar como destacado</label>
-            <div class="modal-actions">
-              <button type="submit" class="btn btn-primary">Guardar producto</button>
-              <button type="button" class="btn btn-secondary" data-close="product-editor-modal">Cancelar</button>
-            </div>
-          </form>
+          <button id="product-modal-quote" type="button" class="btn btn-primary">Solicitar cotización</button>
         </div>
       </div>
     </div>

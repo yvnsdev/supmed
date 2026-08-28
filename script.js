@@ -30,6 +30,7 @@ const CATEGORY_NAMES = {
 };
 
 let products = [];
+let quoteRequests = [];
 let categories = [];
 let catalogFilters = [];
 const PRODUCTS_PER_PAGE = 8;
@@ -171,6 +172,62 @@ function categoryOptions(selected = "") {
   )).join("");
 }
 
+function formatQuoteDate(value) {
+  return new Intl.DateTimeFormat("es-CL", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  }).format(new Date(value));
+}
+
+function renderQuoteRequests() {
+  const list = $("#quote-requests-list");
+  if (!list) return;
+
+  if (!state.user) {
+    list.innerHTML = "";
+    return;
+  }
+
+  if (!quoteRequests.length) {
+    list.innerHTML = '<p class="quote-requests-empty">Aún no hay solicitudes de cotización.</p>';
+    return;
+  }
+
+  list.innerHTML = quoteRequests.map((request) => `
+    <article class="quote-request-card">
+      <div class="quote-request-title">
+        <strong>${escapeHtml(request.name)}</strong>
+        <time datetime="${escapeHtml(request.created_at)}">${escapeHtml(formatQuoteDate(request.created_at))}</time>
+      </div>
+      <p><b>Correo:</b> <a href="mailto:${escapeHtml(request.email)}">${escapeHtml(request.email)}</a>${request.phone ? ` · <a href="tel:${escapeHtml(request.phone)}">${escapeHtml(request.phone)}</a>` : ""}</p>
+      ${request.position || request.institution ? `<p><b>Empresa:</b> ${escapeHtml([request.position, request.institution].filter(Boolean).join(" · "))}</p>` : ""}
+      ${request.product_name || request.interest ? `<p><b>Interés:</b> ${escapeHtml(request.interest || request.product_name)}</p>` : ""}
+      ${request.message ? `<p><b>Mensaje:</b> ${escapeHtml(request.message)}</p>` : ""}
+    </article>
+  `).join("");
+}
+
+async function loadQuoteRequests() {
+  if (!db || !state.user) {
+    quoteRequests = [];
+    renderQuoteRequests();
+    return;
+  }
+
+  const { data, error } = await db
+    .from("quote_requests")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    toast("No se pudieron cargar las solicitudes de cotización.", "error");
+    return;
+  }
+
+  quoteRequests = data || [];
+  renderQuoteRequests();
+}
+
 function normalizeSearchText(value) {
   return String(value ?? "")
     .normalize("NFD")
@@ -208,12 +265,6 @@ function variantOptions(value) {
 
 function renderCategories() {
   $("#filter-cat").innerHTML = '<option value="">Todas las categorias</option>' + filterOptions(state.filter);
-  $("#product-category-input").innerHTML = categories.length
-    ? categoryOptions()
-    : '<option value="">Sin categorias disponibles</option>';
-  $("#product-filter-options").innerHTML = catalogFilters
-    .map((filter) => `<option value="${escapeHtml(filter.id)}"></option>`)
-    .join("");
 }
 
 function productVisual(product) {
@@ -248,10 +299,6 @@ function productCard(product) {
         <div class="prod-actions">
           <button class="btn btn-primary btn-sm" type="button" data-quote-prod="${product.id}">Cotizar</button>
           <button class="btn btn-secondary btn-sm" type="button" data-view-prod="${product.id}">Ver detalle</button>
-        </div>
-        <div class="admin-actions">
-          <button class="btn btn-sm btn-admin-edit" type="button" data-edit-prod="${product.id}">Editar</button>
-          <button class="btn btn-sm btn-admin-delete" type="button" data-delete-prod="${product.id}">Borrar</button>
         </div>
       </div>
     </article>
@@ -476,8 +523,10 @@ function updateAuthUi() {
   $("#auth-button").classList.toggle("hidden", isAdmin);
   $("#logout-button").classList.toggle("hidden", !isAdmin);
   $("#admin-catalog-tools").classList.toggle("hidden", !isAdmin);
+  $("#admin-quotes-panel").classList.toggle("hidden", !isAdmin);
   $("#admin-user-label").textContent = isAdmin ? `Conectado como ${state.user.email}` : "Acceso no iniciado";
   renderProducts();
+  if (!isAdmin) renderQuoteRequests();
 }
 
 async function refreshSession() {
@@ -489,10 +538,12 @@ async function refreshSession() {
   const { data } = await db.auth.getSession();
   state.user = data.session?.user || null;
   updateAuthUi();
+  if (state.user) loadQuoteRequests();
 
   db.auth.onAuthStateChange((_event, session) => {
     state.user = session?.user || null;
     updateAuthUi();
+    if (state.user) loadQuoteRequests();
   });
 }
 
@@ -517,7 +568,7 @@ async function submitLogin(event) {
 
   form.reset();
   closeModal("login-modal");
-  toast("Acceso iniciado. Ya puedes gestionar el catalogo.", "success");
+  toast("Acceso iniciado. Ya puedes gestionar el catálogo y revisar cotizaciones.", "success");
 }
 
 async function logout() {
@@ -736,7 +787,8 @@ async function submitQuote(event) {
     phone: fields.phone.value.trim(),
     email: fields.email.value.trim(),
     interest: fields.interest.value.trim(),
-    message: fields.message.value.trim()
+    message: fields.message.value.trim(),
+    productName: fields.product_name.value.trim()
   };
 
   if (!data.name || !data.email) {
@@ -744,22 +796,29 @@ async function submitQuote(event) {
     return;
   }
 
-  const message = [
-    "Hola SUPMED, quiero solicitar una cotizacion.",
-    `Nombre: ${data.name}`,
-    `Cargo: ${data.position || "No indicado"}`,
-    `Institucion: ${data.institution || "No indicada"}`,
-    `Telefono: ${data.phone || "No indicado"}`,
-    `Correo: ${data.email}`,
-    `Producto o especialidad: ${data.interest || "No indicado"}`,
-    "",
-    "Mensaje:",
-    data.message || "Sin mensaje adicional"
-  ].join("\n");
+  if (!db) {
+    toast("No podemos registrar tu solicitud en este momento. Intenta nuevamente más tarde.", "error");
+    return;
+  }
 
-  localStorage.setItem("supmed-last-request", JSON.stringify({ ...data, createdAt: new Date().toISOString() }));
-  openWhatsapp(message);
-  toast("Abrimos WhatsApp con tu solicitud lista para enviar.", "success");
+  const { error } = await db.from("quote_requests").insert({
+    name: data.name,
+    position: data.position,
+    institution: data.institution,
+    phone: data.phone,
+    email: data.email,
+    product_name: data.productName,
+    interest: data.interest,
+    message: data.message
+  });
+
+  if (error) {
+    toast("No se pudo guardar la solicitud. Intenta nuevamente.", "error");
+    return;
+  }
+
+  if (state.user) loadQuoteRequests();
+  toast("Tu solicitud fue enviada correctamente.", "success");
   form.reset();
   closeModal("quote-modal");
 }
@@ -827,10 +886,6 @@ function init() {
     });
   });
 
-  $("#auth-button").addEventListener("click", () => openModal("login-modal"));
-  $("#logout-button").addEventListener("click", logout);
-  $("#add-product-button").addEventListener("click", () => openProductEditor());
-
   $("#filter-cat").addEventListener("change", (event) => {
     state.filter = event.target.value;
     state.page = 1;
@@ -842,9 +897,6 @@ function init() {
     renderProducts();
   });
   $("#quote-form").addEventListener("submit", submitQuote);
-  $("#login-form").addEventListener("submit", submitLogin);
-  $("#product-form").addEventListener("submit", saveProduct);
-  $("#product-form").elements.hasVariants.addEventListener("change", syncVariantsField);
 
   renderCategories();
   renderProducts();
@@ -852,7 +904,6 @@ function init() {
   initHeroCarousel();
   initHeaderBehavior();
   initBaseChat();
-  refreshSession();
   loadProducts();
 
   if (!db) {
