@@ -136,7 +136,10 @@ function mapProductFromDb(row) {
     categoryId: row.category_id || "",
     filter: row.filter || "",
     name: row.name,
-    reference: row.reference,
+    reference: row.reference || row.code || row.codigo || row.sku || "",
+    code: row.code || row.codigo || "",
+    sku: row.sku || "",
+    productCode: row.product_code || row.productCode || "",
     short: row.short_description,
     long: row.long_description || "",
     imageUrl: row.image_url || "",
@@ -239,6 +242,15 @@ function compactSearchText(value) {
   return normalizeSearchText(value).replace(/[^a-z0-9]+/g, "");
 }
 
+function productSearchText(product) {
+  // Los catálogos importados pueden llamar al código SKU, code o codigo.
+  // Se consideran todos para no depender de un único nombre de columna.
+  return [
+    product.name, product.reference, product.code, product.sku, product.productCode,
+    product.short, product.long, product.variants, product.category, product.filter
+  ].filter(Boolean).join(" ");
+}
+
 function filterOptions(selected = "") {
   return catalogFilters.map((filter) => (
     `<option value="${escapeHtml(filter.id)}" ${filter.id === selected ? "selected" : ""}>${escapeHtml(filter.name)}</option>`
@@ -317,7 +329,7 @@ function renderProducts() {
   if (query) {
     items = items.filter((product) => {
       const category = categories.find((item) => item.id === product.categoryId)?.name || "";
-      const haystack = normalizeSearchText(`${product.name} ${product.reference} ${product.short} ${product.long} ${category} ${product.filter}`);
+      const haystack = normalizeSearchText(productSearchText({ ...product, category }));
       // La forma compacta permite encontrar referencias aunque se escriban con
       // guiones, espacios o separadores distintos: 122-230, 122 230 y 122230.
       return haystack.includes(query) || compactSearchText(haystack).includes(compactQuery);
@@ -326,7 +338,9 @@ function renderProducts() {
 
   const emptyMessage = state.loadingProducts
     ? "Cargando productos..."
-    : "Por ahora no hay productos publicados en el catalogo.";
+    : query
+      ? `No encontramos resultados para “${escapeHtml(state.search.trim())}”. Prueba el código sin guiones o revisa la referencia.`
+      : "Por ahora no hay productos publicados en el catalogo.";
   const totalPages = Math.max(1, Math.ceil(items.length / PRODUCTS_PER_PAGE));
   state.page = Math.min(Math.max(state.page, 1), totalPages);
   const pageStart = (state.page - 1) * PRODUCTS_PER_PAGE;
@@ -335,6 +349,14 @@ function renderProducts() {
   $("#prod-grid").innerHTML = pageItems.length
     ? pageItems.map(productCard).join("")
     : `<p class="empty">${emptyMessage}</p>`;
+
+  const results = $("#catalog-results");
+  if (results) {
+    results.textContent = query
+      ? (items.length ? `${items.length} ${items.length === 1 ? "resultado" : "resultados"} para “${state.search.trim()}”.` : `No encontramos productos con el código o texto “${state.search.trim()}”.`)
+      : `${items.length} ${items.length === 1 ? "producto disponible" : "productos disponibles"}.`;
+  }
+  $("#clear-search")?.toggleAttribute("hidden", !query);
 
   renderPagination(items.length, totalPages);
   bindProductButtons(document);
@@ -894,6 +916,13 @@ function init() {
   $("#filter-search").addEventListener("input", (event) => {
     state.search = event.target.value;
     state.page = 1;
+    renderProducts();
+  });
+  $("#clear-search").addEventListener("click", () => {
+    state.search = "";
+    state.page = 1;
+    $("#filter-search").value = "";
+    $("#filter-search").focus();
     renderProducts();
   });
   $("#quote-form").addEventListener("submit", submitQuote);

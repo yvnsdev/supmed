@@ -387,8 +387,10 @@ section { position: relative; padding: 118px 0; background: #fff; }
   color: var(--ink-soft);
   font-weight: 800;
 }
-.catalog-toolbar { position: relative; display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 30px; padding: 10px; border: 1px solid rgba(12, 109, 173, .12); border-radius: 18px; background: rgba(255,255,255,.72); box-shadow: 0 8px 24px rgba(6, 27, 53, .035); }
+.catalog-toolbar { position: relative; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; padding: 8px 10px; border: 1px solid rgba(12, 109, 173, .16); border-radius: 18px; background: rgba(255,255,255,.88); box-shadow: 0 12px 30px rgba(6, 27, 53, .055); transition: border-color .18s ease, box-shadow .18s ease; }
+.catalog-toolbar:focus-within { border-color: rgba(9, 174, 224, .7); box-shadow: 0 14px 34px rgba(12, 109, 173, .12); }
 .search-icon { display: grid; place-items: center; width: 28px; color: var(--brand-mid); font-size: 1.6rem; line-height: 1; }
+.catalog-search { flex: 1 1 260px; min-width: 0; }
 .catalog-toolbar input, .catalog-toolbar select, .field select {
   min-height: 46px;
   border: 1px solid var(--line);
@@ -398,9 +400,12 @@ section { position: relative; padding: 118px 0; background: #fff; }
   color: var(--ink);
   font: inherit;
 }
-.catalog-toolbar input { flex: 1; min-width: 220px; border: 0; background: transparent; box-shadow: none; }
+.catalog-toolbar input { width: 100%; min-width: 0; border: 0; background: transparent; box-shadow: none; }
 .catalog-toolbar input:focus { outline: 0; border-color: transparent; }
 .catalog-toolbar select { min-width: 230px; }
+.clear-search { border: 0; border-radius: 999px; padding: 7px 10px; color: var(--brand-dark); background: var(--surface-blue); font: inherit; font-size: .76rem; font-weight: 800; cursor: pointer; }
+.clear-search:hover { background: #cfe8f8; }
+.catalog-results { min-height: 26px; margin: 0 2px 20px; color: var(--ink-soft); font-size: .85rem; font-weight: 650; }
 .catalog-toolbar input:focus, .catalog-toolbar select:focus, .field input:focus, .field textarea:focus, .field select:focus {
   outline: 3px solid rgba(9, 174, 224, .2);
   border-color: var(--brand);
@@ -850,6 +855,8 @@ body.is-admin .admin-actions { display: flex; }
   .chat-suggestions { padding: 0 14px 14px; }
   .chat-messages { padding: 16px; }
   .row-2 { grid-template-columns: 1fr; }
+  .catalog-toolbar select { width: 100%; min-width: 0; }
+  .catalog-results { margin-bottom: 16px; }
   .admin-catalog-tools { align-items: stretch; flex-direction: column; }
   .final-cta { padding: 42px 22px; }
   .floating-quote { right: 16px; bottom: 16px; }

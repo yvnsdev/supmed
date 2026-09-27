@@ -229,9 +229,14 @@
           </div>
           <div class="catalog-toolbar">
             <span class="search-icon" aria-hidden="true">⌕</span>
-            <input id="filter-search" type="search" placeholder="Buscar producto, especialidad, código o set...">
+            <label class="catalog-search" for="filter-search">
+              <span class="sr-only">Buscar en el catálogo</span>
+              <input id="filter-search" type="search" autocomplete="off" placeholder="Busca por nombre, especialidad o código...">
+            </label>
+            <button id="clear-search" class="clear-search" type="button" hidden aria-label="Limpiar búsqueda">Limpiar</button>
             <select id="filter-cat" aria-label="Filtrar por categoria"></select>
           </div>
+          <p id="catalog-results" class="catalog-results" aria-live="polite"></p>
           <div id="prod-grid" class="grid-products"></div>
           <div id="catalog-pagination" class="catalog-pagination" aria-label="Paginacion del catalogo"></div>
         </div>
